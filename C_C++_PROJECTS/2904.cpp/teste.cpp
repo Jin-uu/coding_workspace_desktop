@@ -25,6 +25,11 @@ int main(int argc, char const *argv[]) {
     }
     R_MAX = MAX_INT/2;
 
+    // // debug {
+    // cout << "max : " << MAX_INT << endl;
+    // cout << "root max : " << R_MAX << endl;
+    // // }
+
     bool isPrime[R_MAX+1] ={};
     for(int i=2; i<=R_MAX; i++){
         isPrime[i] = true;  // 모두 소수로 가정
@@ -36,15 +41,34 @@ int main(int argc, char const *argv[]) {
             }
         }
     }
+    // // debug {
+    // cout << "isPrime : ";
+    // for(int i=2; i<R_MAX+1; i++){
+    //     if(isPrime[i]) cout << i << " ";
+    // }
+    // cout << endl;
+    // // }
 
+
+    vector<int> aratos_n;
     int curr_idx = 0;       // 소수의 개수
 
     for (int i = 1; i <= R_MAX; i++){
          if (isPrime[i]){  
             aratos[curr_idx] = i;
+            aratos_n.push_back(i);
             curr_idx++;
         } 
     }
+
+    // // debug {
+    // cout << "curr_idx : " << curr_idx << endl;
+    // cout << "aratos : ";
+    // for(int i=0; i<curr_idx; i++){
+    //     cout << aratos[i] << " ";
+    // }
+    // cout << endl;
+    // // }
 
     int res[curr_idx][n] = {};
     int sum_div[curr_idx] = {};
@@ -69,6 +93,21 @@ int main(int argc, char const *argv[]) {
         sum_div[i] /= n;
     }
 
+    // // debug{
+    // cout << "res : " << endl;
+    // for(int i=0; i<curr_idx; i++){
+    //     for(int j=0; j < n; j++){
+    //         cout << res[i][j] << ",";
+    //     }
+    //     cout << endl;
+    // }
+
+    // cout << "sum_div : " << endl;
+    // for(int j=0; j<curr_idx; j++){
+    //     cout << sum_div[j] << ",";
+    // }
+    // cout << endl;
+    // //}
 
     int eq_cnt;
     int move_cnt = 0;
