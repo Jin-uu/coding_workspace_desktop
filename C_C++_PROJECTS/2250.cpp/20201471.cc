@@ -1,4 +1,3 @@
-// #define DEBUG
 #include <iostream>
 #define MAX 10000
 
@@ -46,16 +45,6 @@ int main(void) {
         cin >> T[node_input][1];
         cin >> T[node_input][2];
     }
-
-    #ifdef DEBUG
-    cout << "T : " << endl;
-    for(int i=1; i<n+1; i++){
-        for(int j=0; j<3; j++){
-            cout << T[i][j] << " ";
-        }
-        cout << endl;
-    }
-    #endif
     
     int LEV[n+1];               // 노드의 레벨을 담을 배열
     for(int i=1; i<n+1; i++){   // 모두 1로 초기화
@@ -79,34 +68,7 @@ int main(void) {
         }
     }
 
-    // LEV, head_node_num 출력
-    #ifdef DEBUG
-    cout << "LEV : ";
-    for(int i=1; i<n+1; i++){
-        cout << LEV[i] << ',';
-    }
-    cout << endl;
-    cout << "head_node_num : " << head_node_num << endl;
-    #endif
-
     inorder_traverse(head_node_num);
-
-    // X, Y, MAX_level 출력
-    #ifdef DEBUG
-    cout << "X : ";
-    for(int i=1; i<n+1; i++){
-        cout << X[i] << ',';
-    }
-    cout << endl;
-    cout << "Y : ";
-    for(int i=1; i<n+1; i++){
-        cout << Y[i] << ',';
-    }
-    cout << endl;
-    cout << "MAX_level : ";
-    cout << MAX_level;
-    cout << endl;
-    #endif
 
     int first_node = -1;
     int width[MAX_level+1];             // width[n] : level n의 너비
