@@ -1,4 +1,4 @@
-#define DEBUG
+// #define DEBUG
 
 #define MAX 100000
 #include <iostream>
@@ -44,19 +44,20 @@ bool check(int mid) {
 }
 
 int main(void){
-    #ifdef DEBUG
-    FILE *in = fopen("6236_test_00.txt","r");
-    if(in == NULL){
-        cout << ">> file error" << endl;
-        return 0;
-    }
-    fscanf(in, "%d %d", &n,&m);
-    for(int i=1; i<n+1; i++){
-        fscanf(in,"%d",&MONEY[i]);
-    }
-    cout << "n, m : " << n << ", " << m << endl;
-    #endif
-    #ifndef DEBUG
+    // #ifdef DEBUG
+    // FILE *in;
+    // in = fopen("6236_test_00.txt","r");
+    // if(in == NULL){
+    //     cout << ">> file error" << endl;
+    //     return 0;
+    // }
+    // fscanf(in, "%d %d", &n,&m);
+    // for(int i=1; i<n+1; i++){
+    //     fscanf(in,"%d",&MONEY[i]);
+    // }
+    // cout << "n, m : " << n << ", " << m << endl;
+    // #endif
+    // #ifndef DEBUG
     cin >> n;
     cin >> m;
 
@@ -64,14 +65,20 @@ int main(void){
         // cin >> MONEY[i];
         scanf("%d", &MONEY[i]);
     }
-    #endif
+    
+    isPos(100);
+    isPos(101);
+    isPos(102);
+    isPos(103);
+    isPos(104);
+    // #endif
 
-    #ifdef DEBUG
-    cout << "MONEY : " << endl;
-    for(int i=1; i<n+1; i++){
-        cout << MONEY[i] << endl;
-    }
-    #endif
+    // #ifdef DEBUG
+    // cout << "MONEY : " << endl;
+    // for(int i=1; i<n+1; i++){
+    //     cout << MONEY[i] << endl;
+    // }
+    // #endif
 
     int total=0;
     for(int i=1; i<n+1; i++){
@@ -80,21 +87,20 @@ int main(void){
 
     int least = 1;
 
-    #ifdef DEBUG
-    cout << "total : " << total << endl;
-    cout << "least : " << least << endl;
-    #endif
+    // #ifdef DEBUG
+    // cout << "total : " << total << endl;
+    // cout << "least : " << least << endl;
+    // #endif
 
     int left = least;
     int right = total;
     int mid= (left+right)/2;
     int ans =-1;
-    // cout << ">> " << left << ",  " << mid << ",  " << right << endl;
    
     while(left <= right){
         mid = (left+right)/2;
         #ifdef DEBUG
-        cout << ">> " << left << ",  " << mid << ",  " << right << " : " << ans <<endl;
+        cout << ">> " << left << ",  " << mid << ",  " << right << " : ";
         #endif
         if(isPos(mid)){         // 중간이 가능하면
             right = mid-1;      // 중간의 왼쪽 탐색
@@ -103,6 +109,9 @@ int main(void){
         else{                   // 중간이 불가능하면
             left = mid+1;       // 중간의 오른쪽 탐색
         }
+        #ifdef DEBUG
+        cout << ans << endl;
+        #endif
     }
 
     cout << ans;
