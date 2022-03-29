@@ -13,6 +13,7 @@ int max_n = -1;                 // 입력받은 정수의 최대값
 int GCD = 1;                    // 최대 공약수
 
 bool get_user_input(void){
+    cin.clear(); 
     int check = true;
 
     cout << ">> Input the number of numbers to process : ";
@@ -21,7 +22,7 @@ bool get_user_input(void){
     if(n<=1 || n>=31){                                      // n의 범위(2~30) 검사
         return false;
     }
-    
+
     max_n = -1;
     cout << ">> Input the numbers to be process : ";
     for(int i=0; i<n; i++){
@@ -33,8 +34,27 @@ bool get_user_input(void){
         nums[i] = temp_num;
         nums_copy[i] = temp_num;
         if(max_n < temp_num) max_n = temp_num;
+        // cin.clear();
     }
-
+    char end_check = getchar();
+    if(end_check == ' '){
+        #ifdef DEBUG
+        cout << "1)end_check : ' '" << endl;
+        #endif
+        cin.ignore(1,'\n');
+        check = false;
+    }
+    else if(end_check == '\n'){
+        #ifdef DEBUG
+        cout << "2)end_check : '\\n'" << endl;
+        #endif
+    }
+    else{
+        #ifdef DEBUG
+        cout << "3)end_check : " << end_check << endl;
+        #endif
+        check = false;
+    }
     return check;
 }
 
@@ -87,7 +107,6 @@ int main(int argc, char const *argv[]){
     #endif
 
     chrono::system_clock::time_point StartTime = chrono::system_clock::now();
-    
 
     sort_nums();                        // 입력받은 정수 정렬
 
