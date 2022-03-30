@@ -20,7 +20,6 @@ public class hw01 {
             }
         }
         scanner.close();
-        long startTimeMilli = System.currentTimeMillis();
         long startTimeNano = System.nanoTime();
 
         sortNum();
@@ -54,14 +53,10 @@ public class hw01 {
             System.out.println(prime_cnt);
         }
 
-        
-        long endTimeMilli = System.currentTimeMillis();
         long endTimeNano = System.nanoTime();
 
-        long totalTimeMilli = endTimeMilli - startTimeMilli;
         long totalTimeNano = endTimeNano - startTimeNano;
-        System.out.println("Total execution time using JAVA is "+totalTimeMilli+"(millisec)");
-        System.out.println("Total execution time using JAVA is "+totalTimeNano+"(nanosec)");
+        System.out.println("Total execution time using JAVA is "+totalTimeNano/1000000.0+"(millisec)");
     }
 
     static void setIsPrime(){
