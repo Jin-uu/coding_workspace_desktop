@@ -17,7 +17,7 @@ int get_dp(int y, int x, int left, int last){      // last: 마지막으로 방�
         if(c_loc[1][1] && c_loc[1][1] < last && left==1){       // 시작지점에 오락실이 있고 last보다 작고 남은 오락실 1개인 경우
             return 1;
         }
-        if(!c_loc[1][1] && left==0){                             // 시작지점에 오락실이 없고 남은 오락실 0개인 경우
+        if(c_loc[1][1] ==0 && left==0){                             // 시작지점에 오락실이 없고 남은 오락실 0개인 경우
             return 1;
         }
         return 0;
@@ -30,12 +30,12 @@ int get_dp(int y, int x, int left, int last){      // last: 마지막으로 방�
     }
 
     ret=0;
-    if(!c_loc[y][x]){       // x,y에 오락실이 없는 경우
+    if(c_loc[y][x] == 0){       // x,y에 오락실이 없는 경우
         // ret = (ret + get_dp(y-1,x,left,last) + get_dp(y,x-1,left,last)) % DIV;
         ret = (ret + get_dp(y-1, x, left, last)) % DIV;
         ret = (ret + get_dp(y, x-1, left, last)) % DIV;
     }
-    if(c_loc[y][x] && c_loc[y][x] < last && left){        // 현 위치에 오락실이 있고 조건을 만족하는 경우
+    if(c_loc[y][x] != 0 && c_loc[y][x] < last && left != 0){        // 현 위치에 오락실이 있고 조건을 만족하는 경우
         // ret = (ret + get_dp(y-1,x,left-1,c_loc[y][x]) + get_dp(y,x-1,left-1,c_loc[y][x])) % DIV;
         ret = (ret + get_dp(y - 1, x, left-1, c_loc[y][x])) % DIV;
         ret = (ret + get_dp(y, x - 1, left-1, c_loc[y][x])) % DIV;
