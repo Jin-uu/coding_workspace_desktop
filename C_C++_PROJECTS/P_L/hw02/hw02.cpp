@@ -1,3 +1,5 @@
+// #define DEBUG
+
 #include <iostream>
 #include <vector>
 #include <string>
@@ -150,20 +152,28 @@ int lex(){
             lexeme[3] = 0;
             break;
     } /* End of switch */
+    #ifdef DEBUG
     printf("Next token is: %d, Next lexeme is %s\n", nextToken, lexeme);
+    #endif
     return nextToken;
 } /* End of function lex */
 
 double number(){
+    #ifdef DEBUG
     cout << "Enter <number>" << endl;
+    #endif
     int curr_num = stoi(lexeme);
     lex();
+    #ifdef DEBUG
     cout << "Exit <number>" << endl;
+    #endif
     return curr_num;
 }
 
 double factor(){
+    #ifdef DEBUG
     cout << "Enter <factor>" << endl;
+    #endif
     bool isSUB = false;
     double curr_num;
 
@@ -188,7 +198,9 @@ double factor(){
         print_error();
         exit(0);
     }
+    #ifdef DEBUG
     cout << "Exit <factor>" << endl;
+    #endif
     if(isSUB){
         return curr_num * -1;
     }
@@ -196,7 +208,9 @@ double factor(){
 }
 
 double term(){
+    #ifdef DEBUG
     cout << "Enter <term>" << endl;
+    #endif
 
     bool isOP = false;
 
@@ -210,12 +224,16 @@ double term(){
         else curr_num /= factor();
 
     }
+    #ifdef DEBUG
     cout << "Exit <term>" << endl;    
+    #endif
     return curr_num;
 }
 
 double expr(){
+    #ifdef DEBUG
     cout << "Enter <expr>" << endl;
+    #endif
 
     double
     curr_num = term();
@@ -226,7 +244,9 @@ double expr(){
         if(curr_Token == ADD_OP) curr_num += term();
         else curr_num -= term();
     }
+    #ifdef DEBUG
     cout << "Exit <expr>" << endl;
+    #endif
     return curr_num;
 }
 
@@ -237,7 +257,15 @@ int main(void){
         lex();
 
         double ans = expr();
-        cout << ans <<endl;
+
+        if((ans - (int)ans) == 0){      // ans = 정수
+            cout << ans << endl;
+        }
+        else{
+            cout << fixed;
+            cout.precision(6);
+            cout << ans <<endl;
+        }
     }
     return 0;
 }
