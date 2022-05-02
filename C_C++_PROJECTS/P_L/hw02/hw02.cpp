@@ -30,8 +30,8 @@ int lexLen;
 int token;
 int nextToken;
 int curr_index;
-vector<char> user_input;
-string user_input_string;
+int cnt_R_paren=0;
+int cnt_L_paren=0;
 
 /* Function declarations */
 int lookup(char);
@@ -49,8 +49,8 @@ void print_error(){ cout << "Syntax error!!" << endl; }
 
 int lookup(char ch){
     switch(ch){
-        case '(': addChar(); nextToken = LEFT_PAREN;    break; 
-        case ')': addChar(); nextToken = RIGHT_PAREN;   break;
+        case '(': addChar(); nextToken = LEFT_PAREN;    cnt_L_paren++;  break; 
+        case ')': addChar(); nextToken = RIGHT_PAREN;   cnt_R_paren++;  break;
         case '+': addChar(); nextToken = ADD_OP;        break;
         case '-': addChar(); nextToken = SUB_OP;        break;
         case '*': addChar(); nextToken = MULT_OP;       break;
@@ -175,8 +175,7 @@ double term(){
 }
 
 double expr(){
-    double
-    curr_num = term();
+    double curr_num = term();
 
     while(nextToken == ADD_OP || nextToken == SUB_OP){
         int curr_Token = nextToken;
@@ -195,13 +194,18 @@ int main(void){
 
         double ans = expr();
 
+        if(cnt_L_paren != cnt_R_paren){
+            print_error();
+            exit(0);
+        }
+
         if((ans - (int)ans) == 0){      // ans = 정수
-            cout << ans << endl;
+            cout << ans << '\n';
         }
         else{
             cout << fixed;
             cout.precision(6);
-            cout << ans <<endl;
+            cout << ans << '\n';
         }
     }
     return 0;
