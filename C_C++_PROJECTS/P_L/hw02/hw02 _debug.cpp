@@ -32,8 +32,8 @@ int lexLen;
 int token;
 int nextToken;
 int curr_index;
-vector<char> user_input;
-string user_input_string;
+int cnt_R_paren=0;
+int cnt_L_paren=0;
 
 /* Function declarations */
 int lookup(char);
@@ -53,13 +53,14 @@ void print_error(){
 
 int lookup(char ch){
     switch(ch){
-        case '(': addChar(); nextToken = LEFT_PAREN;    break; 
-        case ')': addChar(); nextToken = RIGHT_PAREN;   break;
+        case '(': addChar(); nextToken = LEFT_PAREN;    cnt_L_paren++;  break; 
+        case ')': addChar(); nextToken = RIGHT_PAREN;   cnt_R_paren++;  break;
         case '+': addChar(); nextToken = ADD_OP;        break;
         case '-': addChar(); nextToken = SUB_OP;        break;
         case '*': addChar(); nextToken = MULT_OP;       break;
         case '/': addChar(); nextToken = DIV_OP;        break;
-        default : addChar(); nextToken = EOF;           break;
+        case '\n': addChar(); nextToken = EOF;           break;
+        default : print_error(); exit(0);
     }
     return nextToken;
 }
@@ -77,8 +78,10 @@ void addChar(){
 
 void getChar(){
     if((nextChar = getc(stdin)) != '\n'){
-        if(isalpha(nextChar))
-            charClass = LETTER;
+        if(isalpha(nextChar)){
+            print_error();
+            exit(0);
+        }
         else if(isdigit(nextChar))
             charClass = DIGIT;
             else charClass = UNKNOWN;
@@ -207,6 +210,13 @@ double expr(){
 
     double
     curr_num = term();
+    
+    // if(nextToken == EOF) return curr_num;
+    // if(nextToken != ADD_OP && nextToken != SUB_OP){
+    //     print_error();
+    //     exit(0);
+    // }
+
 
     while(nextToken == ADD_OP || nextToken == SUB_OP){
         int curr_Token = nextToken;
@@ -227,6 +237,11 @@ int main(void){
         lex();
 
         double ans = expr();
+
+        if(cnt_L_paren != cnt_R_paren){
+            print_error();
+            exit(0);
+        }
 
         if((ans - (int)ans) == 0){      // ans = 정수
             cout << ans << endl;

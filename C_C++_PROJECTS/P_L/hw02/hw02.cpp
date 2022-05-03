@@ -45,7 +45,9 @@ double term();
 double factor();
 double number();
 
-void print_error(){ cout << "Syntax error!!" << endl; }
+void print_error(){
+    cout << "Syntax error!!" << endl;
+}
 
 int lookup(char ch){
     switch(ch){
@@ -55,7 +57,8 @@ int lookup(char ch){
         case '-': addChar(); nextToken = SUB_OP;        break;
         case '*': addChar(); nextToken = MULT_OP;       break;
         case '/': addChar(); nextToken = DIV_OP;        break;
-        default : addChar(); nextToken = EOF;           break;
+        case '\n': addChar(); nextToken = EOF;           break;
+        default : print_error(); exit(0);
     }
     return nextToken;
 }
@@ -73,8 +76,10 @@ void addChar(){
 
 void getChar(){
     if((nextChar = getc(stdin)) != '\n'){
-        if(isalpha(nextChar))
-            charClass = LETTER;
+        if(isalpha(nextChar)){
+            print_error();
+            exit(0);
+        }
         else if(isdigit(nextChar))
             charClass = DIGIT;
             else charClass = UNKNOWN;
@@ -121,6 +126,9 @@ int lex(){
             lexeme[3] = 0;
             break;
     } /* End of switch */
+    #ifdef DEBUG
+    printf("Next token is: %d, Next lexeme is %s\n", nextToken, lexeme);
+    #endif
     return nextToken;
 } /* End of function lex */
 
@@ -175,7 +183,15 @@ double term(){
 }
 
 double expr(){
-    double curr_num = term();
+    double
+    curr_num = term();
+    
+    // if(nextToken == EOF) return curr_num;
+    // if(nextToken != ADD_OP && nextToken != SUB_OP){
+    //     print_error();
+    //     exit(0);
+    // }
+
 
     while(nextToken == ADD_OP || nextToken == SUB_OP){
         int curr_Token = nextToken;
@@ -199,13 +215,18 @@ int main(void){
             exit(0);
         }
 
+        if(nextToken != -1){
+            print_error();
+            exit(0);
+        }
+
         if((ans - (int)ans) == 0){      // ans = 정수
-            cout << ans << '\n';
+            cout << ans << endl;
         }
         else{
             cout << fixed;
             cout.precision(6);
-            cout << ans << '\n';
+            cout << ans <<endl;
         }
     }
     return 0;
