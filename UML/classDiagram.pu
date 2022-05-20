@@ -1,0 +1,44 @@
+@startuml CD
+class   ComputerDevice{
+    +getPrice() : int
+    +getPower() : int
+}
+class   Speaker{
+    -price:int
+    -power:int
+    +getPrice() : int
+    +getPower() : int
+}
+class   Keyboard{
+    -price:int
+    -power:int
+    +getPrice() : int
+    +getPower() : int
+}
+class   Body{
+    -price:int
+    -power:int
+    +getPrice() : int
+    +getPower() : int
+}
+class   Monitor{
+    -price:int
+    -power:int
+    +getPrice() : int
+    +getPower() : int
+}
+class   Computer{
+    +void addComponent(component: ComputerDevice)
+    +void removeComponent(component: ComputerDevice)
+    +getPrice() : int
+    +getPower() : int
+}
+
+ComputerDevice <|-- Speaker
+ComputerDevice <|-- Keyboard
+ComputerDevice <|-- Body
+ComputerDevice <|-- Monitor
+ComputerDevice "0..*" <--* Computer : -components
+
+
+@enduml

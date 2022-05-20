@@ -1,0 +1,11 @@
+@startuml StD
+
+[*] --> OFF
+OFF --> OFF : off_button_pushed
+OFF --> ON  : on_button_pushed
+ON --> OFF  : off_button_pushed
+ON --> SLEEPING : on_button_pushed
+SLEEPING --> ON : on_button_pushed
+SLEEPING --> OFF: off_button_pushed
+
+@enduml

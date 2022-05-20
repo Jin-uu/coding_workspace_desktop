@@ -1,0 +1,18 @@
+@startuml SqD
+participant Client as C
+participant ":ScoreRecord" as S
+participant ":DataSheetView" as D
+
+C ->    S : ""1:addScore(score:int):void""
+activate S
+S ->    D : ""2:update():void""
+deactivate S
+activate D
+D ->    S : ""3:getScoreRecord():List<integer>""
+activate S
+deactivate S
+D ->    D : ""4:displaySocres(record:List<integer>,viewCount:int):void""
+activate D
+deactivate D
+
+@enduml
