@@ -221,6 +221,8 @@ def main() :
 while True :
     print(">> ", end='', flush=True)
     getChar()
+    if charClass == EOF :
+        continue
     lex()
 
     ans = expr()
@@ -228,8 +230,11 @@ while True :
     if cnt_L_paren != cnt_R_paren:
         print_error()
         exit(0)
-    else :
-        print(ans)
+    if nextToken == INT_LIT :
+        print_error()
+        exit(0)
+
+    print(ans)
 
 
 
