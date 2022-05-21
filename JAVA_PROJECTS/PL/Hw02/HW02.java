@@ -1,7 +1,6 @@
 package PL.Hw02;
 
 import java.io.IOException;
-import java.util.Scanner;
 
 public class HW02 {
     /* Character classes */
@@ -19,18 +18,17 @@ public class HW02 {
     public final int DIV_OP = 24;
     public final int LEFT_PAREN = 25;
     public final int RIGHT_PAREN = 26;
-    public final int EOF = -99;
+    public final static int EOF = -99;
     
     
     /* Global declarations */
     /* Variables */
-    public int charClass;
+    public static int charClass;
     public char[] lexeme;
     public char nextChar;
     public int lexLen;
     public int token;
     public int nextToken;
-    public int curr_index;
     public int cnt_R_paren=0;
     public int cnt_L_paren=0;
 
@@ -80,7 +78,8 @@ public class HW02 {
     }
     
     void getChar() throws IOException{
-        if((nextChar = (char) System.in.read()) != '\n'){
+        nextChar = (char) System.in.read();
+        if(nextChar != '\r'){
             if(Character.isLetter(nextChar)){
                 print_error();
                 System.exit(0);
@@ -201,10 +200,22 @@ public class HW02 {
         while(true){
             System.out.print(">> ");
             hw02.getChar();       
+            if(charClass == EOF) {
+                System.in.read();
+                continue;
+            }
             hw02.lex();
             
             double ans = hw02.expr();
+
+            
+            if(hw02.nextToken == hw02.INT_LIT){
+                hw02.print_error();
+                System.exit(0);
+            }
+
             System.out.println(ans);
+            System.in.read();
         }        
     }
 
