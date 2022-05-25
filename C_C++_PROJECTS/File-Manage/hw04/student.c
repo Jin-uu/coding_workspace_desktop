@@ -25,10 +25,14 @@ int readRecord(FILE *fp, STUDENT *s, int rrn){
 	char* buf;
 	buf = (char*)malloc(sizeof(char)*RECORD_SIZE+1);
 	fseek(fp, HEADER_SIZE + RECORD_SIZE*rrn, SEEK_SET);
-	fread(buf, RECORD_SIZE, 1, fp);
+	int check = fread(buf, RECORD_SIZE, 1, fp);
+	// printf("check:%d\n->",check);
 	buf[RECORD_SIZE] = '\0';
 	unpack(buf, s);
+	// printRecord(s);
 	free(buf);
+	if(check == 1) return 1;
+	else return 0;
 }
 
 void unpack(const char *recordbuf, STUDENT *s){
@@ -84,8 +88,11 @@ int writeRecord(FILE *fp, const STUDENT *s, int rrn){
 	// printf("buf : %s\n", buf);
 	
 	fseek(fp, HEADER_SIZE+RECORD_SIZE*rrn, SEEK_SET);
-	fwrite(buf, RECORD_SIZE, 1, fp);
+	int check = fwrite(buf, RECORD_SIZE, 1, fp);
+	// printf("write check:%d\n",check);
 	free(buf);
+	if(check == 1) return 1;
+	else return 0;
 }
 
 void pack(char *recordbuf, const STUDENT *s){
@@ -99,6 +106,7 @@ int appendRecord(FILE *fp, char *id, char *name, char *dept, char *addr, char *e
 	strcpy(temp_s.dept, dept);
 	strcpy(temp_s.addr, addr);
 	strcpy(temp_s.email, email);
+	int check_1=1,check_2=1, check_3=1;
 
 	fp = fopen(filename, "r+");						//파일 열기
 	if(fp == NULL){
@@ -112,21 +120,24 @@ int appendRecord(FILE *fp, char *id, char *name, char *dept, char *addr, char *e
 	if(file_size <= 0){								// 빈파일이면
 		fseek(fp, 0, SEEK_SET);
 		int header = 0;							// 헤더 추가
-		fwrite(&header, sizeof(int), 1, fp);
+		check_2 = fwrite(&header, sizeof(int), 1, fp);
 	}
 
 	fseek(fp,0,SEEK_SET);							// 헤더에서 저장된 레코드 개수 가져오기
 	int record_num;
-	fread(&record_num, sizeof(int), 1, fp);
+	check_3 = fread(&record_num, sizeof(int), 1, fp);
 	// printf("recordnum[d] : %d\n", record_num);
 
 	record_num++;									// 개수 +1
 	// printf("recordnum[d] : %d\n", record_num);
 	
 	fseek(fp, 0, SEEK_SET);							// +1한거 헤더에 갱신	
-	fwrite(&record_num, sizeof(int), 1, fp);
+	check_1 = fwrite(&record_num, sizeof(int), 1, fp);
 
 	writeRecord(fp, &temp_s, record_num-1);
+	// printf("append check:%d->",check);
+	if(check_1 == 0 || check_2 == 0 || check_3==0) return 0;
+	else return 1;
 }
 
 //
@@ -158,7 +169,10 @@ void searchRecord(FILE *fp, enum FIELD f, char *keyval){
 
 	for (int i = 0; i < record_num; i++) {
 		STUDENT* read_s = (STUDENT*)malloc(sizeof(char)*RECORD_SIZE);
-		readRecord(fp,read_s,i);
+		if(readRecord(fp,read_s,i) == 0){
+			printf("error in readRecord()\n");
+			exit(1);
+		}
 		// debug
 		// printf("read student %d : ",i);
 		// printRecord(read_s);
@@ -249,11 +263,14 @@ void main(int argc, char *argv[])
 	FILE *fp;			// 모든 file processing operation은 C library를 사용할 것
 	char* input_id, input_name, input_dept, input_addr, input_email;
 	if(strcmp(argv[1],"-a") == 0){	// append
-		appendRecord(fp, argv[2], argv[3], argv[4], argv[5], argv[6]);
+		if(appendRecord(fp, argv[3], argv[4], argv[5], argv[6], argv[7]) == 0){
+			printf("error in appendRecord()\n");
+			exit(1);
+		}
 	}
 	else{
 		STUDENT temp_s;
-		char *ptr = strtok(argv[2],"=");
+		char *ptr = strtok(argv[3],"=");
 		// printf("prt len : %d\n", strlen(ptr));
 		char *target_field = (char*) malloc(sizeof(char)*strlen(ptr));
 		sprintf(target_field, "%s", ptr);
