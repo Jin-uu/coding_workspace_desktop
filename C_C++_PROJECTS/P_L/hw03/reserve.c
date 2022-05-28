@@ -18,10 +18,13 @@ const int BRANCH_NUM = 6;
 const int MAX_ROOM_NUM = 5;
 
 typedef struct _RESERVE{
+    char room_num[1];
     char user_id[10+1];
     char reserved_time[6+1];
     char using_time[2+1];
 } RESERVE;
+
+#define room_format "./branch_%d_room_%d_info.dat"
 
 // 파일명
 char BRANCH_INFO_FILE_NAME[] = "./branch_info.dat";
@@ -45,37 +48,41 @@ char room_able_char[SIZE_ROOM_ABLE] = {'i','i','i','i','i'};          // curr번 
 bool room_able_arr[5];
 char  room_capacity_char[SIZE_ROOM_CAPACITY] = {'i','i','i','i','i','i','i','i','i','i'};      // 현재 지점의 room의 최대인원 정보
 int room_capacity_arr[5];
-char  reserve_cnt_char[SIZE_RESERVE_CNT] = {'i','i','i','i','i','i','i','i','i','i'};        // 현재 지점의 room의 예약 개수 정보
-int reserve_cnt_arr[5];
+char  room_reserve_cnt_char[SIZE_RESERVE_CNT] = {'i','i','i','i','i','i','i','i','i','i'};        // 현재 지점의 room의 예약 개수 정보
+int room_reserve_cnt_arr[5];
 // input func
-int  get_user_input(void);                  // 사용자 입력 받기
-void wrong_input(void);                     // 입력 오류시
-void exit_program(void);                    // 프로그램 종료
-//      
-void mode_selection(void);                  // 초기 모드 선택 화면
-// admin    
-void mode_admin(void);                      // 관리자 모드 초기 화면
-void mode_add_branch(int);                  // 지점 추가 모드
-void mode_mod_branch(int);                  // 지점 수정 모드
-void mode_del_branch(int);                  // 지점 삭제 모드
-void mode_add_room(int, int);                    // 스터디 룸 추가 모드
-void mode_mod_room(int, int);                    // 스터디 룸 수정 모드
-void mode_del_room(int, int);                    // 스터디 룸 삭제 모드
+int  get_user_input(void);                      // 사용자 입력 받기
+void wrong_input(void);                         // 입력 오류시
+void exit_program(void);                        // 프로그램 종료
+//          
+void mode_selection(void);                      // 초기 모드 선택 화면
+// admin        
+void mode_admin(void);                          // 관리자 모드 초기 화면
+void mode_add_branch(int);                      // 지점 추가 모드
+void mode_mod_branch(int);                      // 지점 수정 모드
+void mode_del_branch(int);                      // 지점 삭제 모드
+void mode_add_room(int, int);                   // 스터디 룸 추가 모드
+void mode_mod_room(int, int);                   // 스터디 룸 수정 모드
+void mode_del_room(int, int);                   // 스터디 룸 삭제 모드
 
 // user 
-void mode_user(void);                       // 사용자 모드 시작
+void mode_user(void);                           // 사용자 모드 초기 화면
 // file manage  
-void open_file(FILE**, char*);              // 파일 열기
-void get_branch_able_info(void);            // 지점 개설 여부 정보 불러오기
-void get_branch_info(int);                  // 특정 지점 정보 불러와서 배열에 저장
-bool is_file_empty(FILE*);                  // 파일이 비어있는지 검사
-void init_branch_able_info(FILE*);          // branch_able_info.dat 초기화
-void init_branch_info(int);                 // branch_n_info.dat 초기화
-void set_branch_able_info(char[]);          // branch_able_info.dat 갱신
-void set_room_able_info(char[],int, int);       // branch_n_info.dat 갱신
+void open_file(FILE**, char*);                      // 파일 열기
+void get_branch_able_info(void);                    // 지점 개설 여부 정보 불러오기
+void get_branch_info(int);                          // 특정 지점 정보 불러와서 배열에 저장
+bool is_file_empty(FILE*);                          // 파일이 비어있는지 검사
+void init_branch_able_info(FILE*);                  // branch_able_info.dat 초기화
+void init_branch_info(int);                         // branch_n_info.dat 초기화
+void set_branch_able_info(char[]);                  // branch_able_info.dat 지점 개설 여부 갱신
+void set_room_able_info(char[],int);                // branch_n_info.dat 스터디 룽 개설 여부 갱신
+void set_room_capacity_info(char[], int);           // branch_n_info.dat 스터디 룽 최대인원 갱신
+void set_room_reserve_cnt_info(char[], int);        // branch_n_info.dat 스터디 룽 예약 개수 갱신
 // translate
-char* get_file_name_with_num(int);          // 지점 번호주면 파일명 반환
-FILE* get_file_pointer_with_num(int);       // 지점 번호주면 파일포인터 반환
+char* get_brnach_file_name(int);                    // 지점 번호주면 파일명 반환
+FILE* get_file_pointer_with_num(int);               // 지점 번호주면 파일포인터 반환
+char* get_room_file_name(int, int);                 // n번 지점의 n번 스터디룸 파일명 반환
+
 
 
 int main(void){
@@ -162,7 +169,7 @@ void mode_admin(void){
     }
 }     
 
-// 지점 추가 모드1
+// 지점 추가 모드
 void mode_add_branch(int branch_num){
     if(branch_able_arr[branch_num-1]){          // 이미 개설 된 지점인지 검사
         printf(">> 이미 개설된 지점입니다.\n");
@@ -185,16 +192,18 @@ void mode_mod_branch(int branch_num){
     for (int i = 1; i <= MAX_ROOM_NUM; i++) {
         printf("    스터디 룸 %d", i);
         if(room_able_arr[i-1]){                     // 스터디 룸 개설 되었으면
-            printf(" (개설됨)\n");
+            printf("(허용인원: %d, 예약 현황: %d개)\n",room_capacity_arr[i-1],room_reserve_cnt_arr[i-1]);
         }
         else { printf(" (개설되지 않음)\n"); }      // 개설 이전이면
     }
     printf("프로그램 종료 : (0)\n");
     printf("-----------------------------\n");
-    printf("스터디 룸 번호를 선택하세요.\n>> ");    // 스터디룸 번호 입력 받기
+    printf("작업할 스터디 룸 번호를 선택하세요.\n>> ");    // 스터디룸 번호 입력 받기
     int input_room_selection = get_user_input();
     if(input_room_selection == 0) exit_program();
-    printf("스터디 룸 %d에 대한 작업을 선택하세요.\n", input_room_selection);   // 선택된 지점에 대한 작업 입력 받기
+    if(input_room_selection<0 || input_room_selection>5) wrong_input();
+
+    printf(">>스터디 룸 %d에 대한 작업을 선택하세요.\n", input_room_selection);   // 선택된 지점에 대한 작업 입력 받기
     printf(" (1) 추가    (2) 수정    (3) 삭제   (4) 프로그램 종료\n");
     printf(">> ");
     switch(get_user_input()){
@@ -222,12 +231,33 @@ void mode_add_room(int branch_num, int room_num){
         return;
     }
     // 개설되지 않은 지점이면
+    printf(">> 스터디 룸 %d의 최대 허용 인원을 입력하세요.(1~10)\n>>",room_num);
+    int max_capacity = get_user_input();
+    char ten, one;
+    if(max_capacity>10 || max_capacity < 1){
+        wrong_input();
+    }
+    else if(max_capacity == 10){
+        ten = '1'; one = '0';
+    }
+    else{
+        ten = '0'; one = max_capacity+'0';
+    }
+
     room_able_char[room_num-1] = '1';
-    set_room_able_info(room_able_char, branch_num, room_num);
+    room_capacity_char[(room_num-1)*2] = ten; room_capacity_char[(room_num-1)*2+1] = one;
+    room_reserve_cnt_char[(room_num-1)*2] = '0'; room_reserve_cnt_char[(room_num-1)*2+1] = '0';
+    set_room_able_info(room_able_char, branch_num);
+    set_room_capacity_info(room_capacity_char,branch_num);
+    set_room_reserve_cnt_info(room_reserve_cnt_char,branch_num);
     printf("스터디 룸 %d을 개설했습니다.\n", room_num);
 }            
 // 스터디 룸 수정 모드
 void mode_mod_room(int branch_num, int room_num){
+    if(!room_able_arr[room_num-1]){          // 개설 된 지점인지 검사
+        printf(">> 개설되지 않은 스터디 룸입니다.\n");
+        return;
+    }
 
 }             
 // 스터디 룸 삭제 모드
@@ -238,7 +268,11 @@ void mode_del_room(int branch_num, int room_num){
     }
 
     room_able_char[room_num-1] = '0';
-    set_room_able_info(room_able_char, branch_num, room_num);
+    room_capacity_char[room_num-1] = '0';
+    room_reserve_cnt_char[room_num-1] = '0';
+    set_room_able_info(room_able_char, branch_num);
+    set_room_capacity_info(room_capacity_char, branch_num);
+    set_room_reserve_cnt_info(room_reserve_cnt_char,branch_num);
     printf("스터디 룸 %d을 삭제했습니다.\n", room_num);
 }                 
 
@@ -315,10 +349,13 @@ void init_branch_able_info(FILE* filestream){
 
 void init_branch_info(int branch_num){
     FILE* fp = get_file_pointer_with_num(branch_num);
-    open_file(&fp , get_file_name_with_num(branch_num));
+    open_file(&fp , get_brnach_file_name(branch_num));
     char branch_info_room_able_init_string[] ="00000";
     char branch_info_room_capacity_init_string[] ="0000000000";
     char branch_info_room_reserve_cnt_init_string[] ="0000000000";
+    set_room_able_info(branch_info_room_able_init_string,branch_num);
+    set_room_capacity_info(branch_info_room_capacity_init_string,branch_num);
+    set_room_reserve_cnt_info(branch_info_room_reserve_cnt_init_string,branch_num);
     fseek(fp,0,SEEK_SET);
     if(fwrite(branch_info_room_able_init_string,strlen(branch_info_room_able_init_string), sizeof(char), fp) <1){
         printf("branch info init error(room_able_char)!\n");
@@ -339,10 +376,10 @@ void init_branch_info(int branch_num){
 
 void get_branch_info(int branch_num){
     FILE* fp = get_file_pointer_with_num(branch_num);    
-    open_file(&fp ,get_file_name_with_num(branch_num));         // 파일 열기
+    open_file(&fp ,get_brnach_file_name(branch_num));         // 파일 열기
     if(is_file_empty(fp)){                                      // 파일이 비어있으면
         init_branch_info(branch_num);                              // 초기화 (지점 없음)
-        open_file(&fp ,get_file_name_with_num(branch_num));     // 파일 열기
+        open_file(&fp ,get_brnach_file_name(branch_num));     // 파일 열기
     }
     
     fseek(fp, 0, SEEK_SET);            // 파일 포인터 시작점 설정
@@ -350,26 +387,26 @@ void get_branch_info(int branch_num){
     fseek(fp, SIZE_ROOM_ABLE, SEEK_SET);            // 파일 포인터 시작점 설정
     fread(room_capacity_char,strlen(room_capacity_char), sizeof(char),fp);   // 읽기    
     fseek(fp, SIZE_ROOM_ABLE + SIZE_ROOM_CAPACITY, SEEK_SET);            // 파일 포인터 시작점 설정
-    fread(reserve_cnt_char,strlen(reserve_cnt_char), sizeof(char),fp);   // 읽기
-    printf("ra:%s\nrc:%s\nrcnt:%s\n", room_able_char, room_capacity_char, reserve_cnt_char);
+    fread(room_reserve_cnt_char,strlen(room_reserve_cnt_char), sizeof(char),fp);   // 읽기
+    printf("ra:%s\nrc:%s\nrcnt:%s\n", room_able_char, room_capacity_char, room_reserve_cnt_char);
 
-    // printf("room_able_arr[]: ");
+    printf("room_able_arr[]: ");
     for (int i = 0; i < 5; i++) {
         if(room_able_char[i] == '0') room_able_arr[i] = false;
         else room_able_arr[i] = true;
         printf("%d ", room_able_arr[i]);
     }
-    // printf("\nroom_capacity_arr[]: ");
+    printf("\nroom_capacity_arr[]: ");
     for (int i = 0; i < 5; i++) {
         room_capacity_arr[i] = (room_capacity_char[i*2] - '0')*10 + (room_capacity_char[i*2+1] - '0');
-        // printf("%d ", room_capacity_arr[i]);
+        printf("%d ", room_capacity_arr[i]);
     }
-    // printf("\nreserve_cnt_arr[]: ");
+    printf("\nreserve_cnt_arr[]: ");
     for (int i = 0; i < 5; i++) {
-        reserve_cnt_arr[i] = (reserve_cnt_char[i*2] - '0')*10 + (reserve_cnt_char[i*2+1] - '0');
-        // printf("%d ", reserve_cnt_arr[i]);
+        room_reserve_cnt_arr[i] = (room_reserve_cnt_char[i*2] - '0')*10 + (room_reserve_cnt_char[i*2+1] - '0');
+        printf("%d ", room_reserve_cnt_arr[i]);
     }
-    
+    printf("\n");
 }
 
 // branch_able_info.txt 갱신
@@ -382,19 +419,40 @@ void set_branch_able_info(char new_branch_info[]){
     fclose(branch_able_info);               // 파일 닫아서 저장
 }  
 // branch_n_info.dat 갱신
-void set_room_able_info(char new_room_info[], int branch_num, int room_num){
+void set_room_able_info(char new_room_info[], int branch_num){
     FILE* fp = get_file_pointer_with_num(branch_num);
-    open_file(&fp, get_file_name_with_num(branch_num));
+    open_file(&fp, get_brnach_file_name(branch_num));
     if(fwrite(new_room_info, strlen(new_room_info), sizeof(char),fp) < 1){
-        printf("error in set branch info!\n");
+        printf("error in set room able info!\n");
         exit(1);
     }
     fclose(fp);               // 파일 닫아서 저장
+}
 
-}     
+void set_room_capacity_info(char new_room_capacity_info[], int branch_num){
+    FILE* fp = get_file_pointer_with_num(branch_num);
+    open_file(&fp, get_brnach_file_name(branch_num));
+    fseek(fp, SIZE_ROOM_ABLE, SEEK_SET);
+    if(fwrite(new_room_capacity_info, strlen(new_room_capacity_info), sizeof(char),fp) < 1){
+        printf("error in set room capacity info!\n");
+        exit(1);
+    }
+    fclose(fp);               // 파일 닫아서 저장
+}
+
+void set_room_reserve_cnt_info(char new_room_reserve_cnt_info[], int branch_num){
+    FILE* fp = get_file_pointer_with_num(branch_num);
+    open_file(&fp, get_brnach_file_name(branch_num));
+    fseek(fp, SIZE_ROOM_ABLE+SIZE_ROOM_CAPACITY, SEEK_SET);
+    if(fwrite(new_room_reserve_cnt_info, strlen(new_room_reserve_cnt_info), sizeof(char),fp) < 1){
+        printf("error in set room reserve_cnt info!\n");
+        exit(1);
+    }
+    fclose(fp);               // 파일 닫아서 저장
+}
 
 // 지점 번호주면 파일명 반환
-char* get_file_name_with_num(int branch_num){
+char* get_brnach_file_name(int branch_num){
     switch(branch_num){
         case 1:
             return BRANCH_1_INFO;
@@ -410,6 +468,14 @@ char* get_file_name_with_num(int branch_num){
             return BRANCH_6_INFO;
     }
 }
+
+// n번 지점의 n번 스터디룸 파일명 반환
+char* get_room_file_name(int branch_num, int room_num){
+    char* file = (char*)malloc(sizeof(char)*30);
+    sprintf(file,room_format, branch_num, room_num);
+    return file;
+}
+
 // 지점 번호주면 파일포인터 반환
 FILE* get_file_pointer_with_num(int branch_num){
     switch(branch_num){
@@ -450,8 +516,6 @@ void unpack(const char *recordbuf, RESERVE *s){
                 s -> using_time[field_idx+1] = '\0';
                 break;
         }
-        field_idx++;
-        idx++;
-        field_idx=0;
+        field_idx++; idx++; field_idx=0;
     }
 }
