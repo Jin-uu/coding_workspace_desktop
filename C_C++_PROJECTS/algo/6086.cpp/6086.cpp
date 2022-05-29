@@ -17,7 +17,7 @@ int ctoi(char c){
     return c - 'a' + 26; 				// 소문자
 }
 
-int solve(){
+void solve(){
 	int src = ctoi('A');
 	int sink = ctoi('Z');
 
