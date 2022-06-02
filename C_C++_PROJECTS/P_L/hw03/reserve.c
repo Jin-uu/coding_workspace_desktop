@@ -314,7 +314,7 @@ void mode_mod_room(int branch_num, int room_num){
         printf(">> 예약이 존재하는 스터디 룸의 정보를 수정할 수 없습니다.\n");
         return;
     }
-    printf(">> 스터디 룸 %d의 변경할 최대 인원 수를 입력하세요. (현재 : %d)\n>>",room_num,room_capacity_arr[room_num]);
+    printf(">> 스터디 룸 %d의 변경할 최대 인원 수를 입력하세요. (현재 : %d)\n>>",room_num,room_capacity_arr[room_num-1]);
     int max_capacity = get_user_input();
     char ten,one;
     if(max_capacity>10 || max_capacity < 1){
@@ -459,6 +459,10 @@ void mode_add_reserve(void){
     int input_room_selection = get_user_input();
     if(input_room_selection == 0) return;
     if(input_room_selection<0 || input_room_selection>5) {wrong_input(); return;}
+    if(!room_able_arr[input_room_selection-1]){
+        printf(">> 아직 개설되지 않은 스터디 룸입니다.\n");
+        return;
+    }
     
     printf("예약할 날짜를 입력하세요(YYMMDD). (초기 화면 : 0)\n>> ");       // 예약일자 입력 받기
     int input_reserved_date;
