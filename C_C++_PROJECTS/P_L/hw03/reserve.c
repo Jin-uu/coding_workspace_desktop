@@ -4,10 +4,10 @@
 #include <stdbool.h>
 #include <string.h>
 #include <unistd.h>
-#include <io.h>
+// #include <io.h>
 #include <time.h>
 
-// ÇÊµå Å©±â »ó¼ö
+// í•„ë“œ í¬ê¸° ìƒìˆ˜
 #define SIZE_BRANCH_ABLE 6
 #define SIZE_ROOM_ABLE 5
 #define SIZE_ROOM_CAPACITY 10
@@ -19,7 +19,7 @@
 #define SIZE_RESERVE 28
 #define SIZE_ROOM_INFO_FILE_NAME 26
 
-// ÃÖ´ë°ª »ó¼ö
+// ìµœëŒ€ê°’ ìƒìˆ˜
 const int BRANCH_NUM = 6;
 const int MAX_ROOM_NUM = 5;
 
@@ -33,7 +33,7 @@ typedef struct _RESERVE{
 
 #define room_format "./branch_%d_room_%d_info.dat"
 
-// ÆÄÀÏ¸í
+// íŒŒì¼ëª…
 char BRANCH_INFO_FILE_NAME[] = "./branch_info.dat";
 char BRANCH_1_INFO[] = "./branch_1_info.dat";
 char BRANCH_2_INFO[] = "./branch_2_info.dat";
@@ -45,56 +45,56 @@ char user_id[1000];
 
 char branch_able_char[6] = {'a','a','a','a','a','a'};
 bool branch_able_arr[6];
-char room_able_char[SIZE_ROOM_ABLE] = {'i','i','i','i','i'};          // curr¹ø ÁöÁ¡ÀÇ room »ı¼º ¿©ºÎ
+char room_able_char[SIZE_ROOM_ABLE] = {'i','i','i','i','i'};          // currë²ˆ ì§€ì ì˜ room ìƒì„± ì—¬ë¶€
 bool room_able_arr[5];
-char  room_capacity_char[SIZE_ROOM_CAPACITY] = {'i','i','i','i','i','i','i','i','i','i'};      // ÇöÀç ÁöÁ¡ÀÇ roomÀÇ ÃÖ´ëÀÎ¿ø Á¤º¸
+char  room_capacity_char[SIZE_ROOM_CAPACITY] = {'i','i','i','i','i','i','i','i','i','i'};      // í˜„ì¬ ì§€ì ì˜ roomì˜ ìµœëŒ€ì¸ì› ì •ë³´
 int room_capacity_arr[5];
-char  room_reserve_cnt_char[SIZE_RESERVE_CNT] = {'i','i','i','i','i','i','i','i','i','i'};        // ÇöÀç ÁöÁ¡ÀÇ roomÀÇ ¿¹¾à °³¼ö Á¤º¸
+char  room_reserve_cnt_char[SIZE_RESERVE_CNT] = {'i','i','i','i','i','i','i','i','i','i'};        // í˜„ì¬ ì§€ì ì˜ roomì˜ ì˜ˆì•½ ê°œìˆ˜ ì •ë³´
 int room_reserve_cnt_arr[5];
 
 // input func
-int  get_user_input(void);                      // »ç¿ëÀÚ ÀÔ·Â ¹Ş±â
-void wrong_input(void);                         // ÀÔ·Â ¿À·ù½Ã
-void exit_program(void);                        // ÇÁ·Î±×·¥ Á¾·á
+int  get_user_input(void);                      // ì‚¬ìš©ì ì…ë ¥ ë°›ê¸°
+void wrong_input(void);                         // ì…ë ¥ ì˜¤ë¥˜ì‹œ
+void exit_program(void);                        // í”„ë¡œê·¸ë¨ ì¢…ë£Œ
 
 // initial mode
-void mode_selection(void);                      // ÃÊ±â ¸ğµå ¼±ÅÃ È­¸é
+void mode_selection(void);                      // ì´ˆê¸° ëª¨ë“œ ì„ íƒ í™”ë©´
 
 // admin mode        
-void mode_admin(void);                          // °ü¸®ÀÚ ¸ğµå ÃÊ±â È­¸é
-void mode_add_branch(int);                      // ÁöÁ¡ Ãß°¡ ¸ğµå
-void mode_mod_branch(int);                      // ÁöÁ¡ ¼öÁ¤ ¸ğµå
-void mode_del_branch(int);                      // ÁöÁ¡ »èÁ¦ ¸ğµå
-void mode_add_room(int, int);                   // ½ºÅÍµğ ·ë Ãß°¡ ¸ğµå
-void mode_mod_room(int, int);                   // ½ºÅÍµğ ·ë ¼öÁ¤ ¸ğµå
-void mode_del_room(int, int);                   // ½ºÅÍµğ ·ë »èÁ¦ ¸ğµå
+void mode_admin(void);                          // ê´€ë¦¬ì ëª¨ë“œ ì´ˆê¸° í™”ë©´
+void mode_add_branch(int);                      // ì§€ì  ì¶”ê°€ ëª¨ë“œ
+void mode_mod_branch(int);                      // ì§€ì  ìˆ˜ì • ëª¨ë“œ
+void mode_del_branch(int);                      // ì§€ì  ì‚­ì œ ëª¨ë“œ
+void mode_add_room(int, int);                   // ìŠ¤í„°ë”” ë£¸ ì¶”ê°€ ëª¨ë“œ
+void mode_mod_room(int, int);                   // ìŠ¤í„°ë”” ë£¸ ìˆ˜ì • ëª¨ë“œ
+void mode_del_room(int, int);                   // ìŠ¤í„°ë”” ë£¸ ì‚­ì œ ëª¨ë“œ
 
 // user mode
-void mode_user(void);                           // »ç¿ëÀÚ ¸ğµå ÃÊ±â È­¸é
-void mode_lookup_rooms(void);                   // ½ºÅÍµğ °ø°£ Á¶È¸
-void mode_add_reserve(void);                    // ½Å±Ô ¿¹¾à
-void mode_mod_reserve(void);                    // ¿¹¾à ¼öÁ¤
+void mode_user(void);                           // ì‚¬ìš©ì ëª¨ë“œ ì´ˆê¸° í™”ë©´
+void mode_lookup_rooms(void);                   // ìŠ¤í„°ë”” ê³µê°„ ì¡°íšŒ
+void mode_add_reserve(void);                    // ì‹ ê·œ ì˜ˆì•½
+void mode_mod_reserve(void);                    // ì˜ˆì•½ ìˆ˜ì •
 
 // file manage  
-void open_file(FILE**, char*);                      // ÆÄÀÏ ¿­±â
-void get_branch_able_info(void);                    // ÁöÁ¡ °³¼³ ¿©ºÎ Á¤º¸ ºÒ·¯¿À±â
-void get_branch_info(int);                          // Æ¯Á¤ ÁöÁ¡ Á¤º¸ ºÒ·¯¿Í¼­ ¹è¿­¿¡ ÀúÀå
-bool is_file_empty(FILE*);                          // ÆÄÀÏÀÌ ºñ¾îÀÖ´ÂÁö °Ë»ç
-void init_branch_able_info(FILE*);                  // branch_able_info.dat ÃÊ±âÈ­
-void init_branch_info(int);                         // branch_n_info.dat ÃÊ±âÈ­
-// void init_room_info(int,int);                    // branch_n_room_n_info.dat ÃÊ±âÈ­
-void set_branch_able_info(char[]);                  // branch_able_info.dat ÁöÁ¡ °³¼³ ¿©ºÎ °»½Å
-void set_room_able_info(char[],int);                // branch_n_info.dat ½ºÅÍµğ ·ë °³¼³ ¿©ºÎ °»½Å
-void set_room_capacity_info(char[], int);           // branch_n_info.dat ½ºÅÍµğ ·ë ÃÖ´ëÀÎ¿ø °»½Å
-void set_room_reserve_cnt_info(char[], int);        // branch_n_info.dat ½ºÅÍµğ ·ë ¿¹¾à °³¼ö °»½Å
-void delete_file(char[]);                           // ÆÄÀÏ »èÁ¦
-void read_reserve(int, int, int, RESERVE*);         // n¹øÁöÁ¡ n¹ø ·ë n¹øÂ° ¿¹¾à ÀĞ¾î¿À±â
-void write_reserve(int, int, int, RESERVE*);        // n¹øÁöÁ¡ n¹ø ·ë n¹øÂ° ¿¹¾à ¾²±â
-void delete_reserve(int, int, int);                 // n¹øÁöÁ¡ n¹ø ·ë n¹øÂ° ¿¹¾à Áö¿ì±â
-bool is_reserve_able(int, int, int, int, int);      // ¿¹¾à ³¯Â¥ °¡´É¿©ºÎ
+void open_file(FILE**, char*);                      // íŒŒì¼ ì—´ê¸°
+void get_branch_able_info(void);                    // ì§€ì  ê°œì„¤ ì—¬ë¶€ ì •ë³´ ë¶ˆëŸ¬ì˜¤ê¸°
+void get_branch_info(int);                          // íŠ¹ì • ì§€ì  ì •ë³´ ë¶ˆëŸ¬ì™€ì„œ ë°°ì—´ì— ì €ì¥
+bool is_file_empty(FILE*);                          // íŒŒì¼ì´ ë¹„ì–´ìˆëŠ”ì§€ ê²€ì‚¬
+void init_branch_able_info(FILE*);                  // branch_able_info.dat ì´ˆê¸°í™”
+void init_branch_info(int);                         // branch_n_info.dat ì´ˆê¸°í™”
+// void init_room_info(int,int);                    // branch_n_room_n_info.dat ì´ˆê¸°í™”
+void set_branch_able_info(char[]);                  // branch_able_info.dat ì§€ì  ê°œì„¤ ì—¬ë¶€ ê°±ì‹ 
+void set_room_able_info(char[],int);                // branch_n_info.dat ìŠ¤í„°ë”” ë£¸ ê°œì„¤ ì—¬ë¶€ ê°±ì‹ 
+void set_room_capacity_info(char[], int);           // branch_n_info.dat ìŠ¤í„°ë”” ë£¸ ìµœëŒ€ì¸ì› ê°±ì‹ 
+void set_room_reserve_cnt_info(char[], int);        // branch_n_info.dat ìŠ¤í„°ë”” ë£¸ ì˜ˆì•½ ê°œìˆ˜ ê°±ì‹ 
+void delete_file(char[]);                           // íŒŒì¼ ì‚­ì œ
+void read_reserve(int, int, int, RESERVE*);         // në²ˆì§€ì  në²ˆ ë£¸ në²ˆì§¸ ì˜ˆì•½ ì½ì–´ì˜¤ê¸°
+void write_reserve(int, int, int, RESERVE*);        // në²ˆì§€ì  në²ˆ ë£¸ në²ˆì§¸ ì˜ˆì•½ ì“°ê¸°
+void delete_reserve(int, int, int);                 // në²ˆì§€ì  në²ˆ ë£¸ në²ˆì§¸ ì˜ˆì•½ ì§€ìš°ê¸°
+bool is_reserve_able(int, int, int, int, int);      // ì˜ˆì•½ ë‚ ì§œ ê°€ëŠ¥ì—¬ë¶€
 
 // translate
-char* get_branch_file_name(int);                    // ÁöÁ¡ ¹øÈ£ÁÖ¸é ÆÄÀÏ¸í ¹İÈ¯
+char* get_branch_file_name(int);                    // ì§€ì  ë²ˆí˜¸ì£¼ë©´ íŒŒì¼ëª… ë°˜í™˜
 
 int main(void){
     while(1) mode_selection();
@@ -109,23 +109,23 @@ int get_user_input(void){
 }
 
 void wrong_input(void){
-    printf(">> ¿Ã¹Ù¸£Áö ¾ÊÀº ÀÔ·ÂÀÔ´Ï´Ù...\n");
+    printf(">> ì˜¬ë°”ë¥´ì§€ ì•Šì€ ì…ë ¥ì…ë‹ˆë‹¤...\n");
 }
 
 void exit_program(void){
-    printf(">> ÇÁ·Î±×·¥À» Á¾·áÇÕ´Ï´Ù...\n");
+    printf(">> í”„ë¡œê·¸ë¨ì„ ì¢…ë£Œí•©ë‹ˆë‹¤...\n");
     exit(0);
 }
 
 
-// ÃÊ±â ¸ğµå ¼±ÅÃ È­¸é
+// ì´ˆê¸° ëª¨ë“œ ì„ íƒ í™”ë©´
 void mode_selection(void){
-    printf("------------<¸ğµå ¼±ÅÃ>------------\n");
-    printf("        1. °ü¸®ÀÚ ¸ğµå (1)\n");
-    printf("        2. »ç¿ëÀÚ ¸ğµå (2)\n");
-    printf("        3. ÇÁ·Î±×·¥ Á¾·á (0)\n");
+    printf("------------<ëª¨ë“œ ì„ íƒ>------------\n");
+    printf("        1. ê´€ë¦¬ì ëª¨ë“œ (1)\n");
+    printf("        2. ì‚¬ìš©ì ëª¨ë“œ (2)\n");
+    printf("        3. í”„ë¡œê·¸ë¨ ì¢…ë£Œ (0)\n");
     printf("-----------------------------------\n");
-    printf("¸ğµå¸¦ ¼±ÅÃÇÏ¼¼¿ä.\n>> ");
+    printf("ëª¨ë“œë¥¼ ì„ íƒí•˜ì„¸ìš”.\n>> ");
     switch(get_user_input()){
         case 1:
             mode_admin();
@@ -142,29 +142,29 @@ void mode_selection(void){
     }
 }
 
-// °ü¸®ÀÚ ¸ğµå ÃÊ±â È­¸é
+// ê´€ë¦¬ì ëª¨ë“œ ì´ˆê¸° í™”ë©´
 void mode_admin(void){
-    get_branch_able_info();                  // branch_able_char ¿¡ Á¤º¸ ÀúÀå
-    printf("--------<°ü¸®ÀÚ ¸ğµå>--------\n");
-    printf("---------<ÁöÁ¡ ÇöÈ²>---------\n");
+    get_branch_able_info();                  // branch_able_char ì— ì •ë³´ ì €ì¥
+    printf("--------<ê´€ë¦¬ì ëª¨ë“œ>--------\n");
+    printf("---------<ì§€ì  í˜„í™©>---------\n");
     for (int i = 1; i <= BRANCH_NUM; i++) {
-        printf("    ÁöÁ¡ %d", i);
-        if(branch_able_arr[i-1]){                  // ÁöÁ¡ °³¼³ µÇ¾úÀ¸¸é
-            printf(" (°³¼³µÊ)\n");
+        printf("    ì§€ì  %d", i);
+        if(branch_able_arr[i-1]){                  // ì§€ì  ê°œì„¤ ë˜ì—ˆìœ¼ë©´
+            printf(" (ê°œì„¤ë¨)\n");
         }
-        else { printf(" (°³¼³µÇÁö ¾ÊÀ½)\n"); }  // °³¼³ ÀÌÀüÀÌ¸é
+        else { printf(" (ê°œì„¤ë˜ì§€ ì•ŠìŒ)\n"); }  // ê°œì„¤ ì´ì „ì´ë©´
     }
-    printf("ÃÊ±â È­¸é : (0)\n");
+    printf("ì´ˆê¸° í™”ë©´ : (0)\n");
     printf("-----------------------------\n");
-    printf("ÁöÁ¡À» ¼±ÅÃÇÏ¼¼¿ä.\n>> ");          // ÁöÁ¡¼±ÅÃ ÀÔ·Â ¹Ş±â
+    printf("ì§€ì ì„ ì„ íƒí•˜ì„¸ìš”.\n>> ");          // ì§€ì ì„ íƒ ì…ë ¥ ë°›ê¸°
     int input_branch_selection = get_user_input();
     if(input_branch_selection != 1 && input_branch_selection != 2 &&input_branch_selection != 3 &&input_branch_selection != 4 &&input_branch_selection != 5 && input_branch_selection != 6){
         wrong_input();
         return;
     }
     if(input_branch_selection == 0) return;
-    printf("ÁöÁ¡ %d¿¡ ´ëÇÑ ÀÛ¾÷À» ¼±ÅÃÇÏ¼¼¿ä.\n", input_branch_selection);   // ¼±ÅÃµÈ ÁöÁ¡¿¡ ´ëÇÑ ÀÛ¾÷ ÀÔ·Â ¹Ş±â
-    printf(" (1) Ãß°¡    (2) ¼öÁ¤    (3) »èÁ¦   (0) ÃÊ±â È­¸é\n");
+    printf("ì§€ì  %dì— ëŒ€í•œ ì‘ì—…ì„ ì„ íƒí•˜ì„¸ìš”.\n", input_branch_selection);   // ì„ íƒëœ ì§€ì ì— ëŒ€í•œ ì‘ì—… ì…ë ¥ ë°›ê¸°
+    printf(" (1) ì¶”ê°€    (2) ìˆ˜ì •    (3) ì‚­ì œ   (0) ì´ˆê¸° í™”ë©´\n");
     printf(">> ");
     switch(get_user_input()){
         case 1:
@@ -184,45 +184,45 @@ void mode_admin(void){
     }
 }     
 
-// ÁöÁ¡ Ãß°¡ ¸ğµå
+// ì§€ì  ì¶”ê°€ ëª¨ë“œ
 void mode_add_branch(int branch_num){
-    if(branch_able_arr[branch_num-1]){          // ÀÌ¹Ì °³¼³ µÈ ÁöÁ¡ÀÎÁö °Ë»ç
-        printf(">> ÀÌ¹Ì °³¼³µÈ ÁöÁ¡ÀÔ´Ï´Ù.\n");
+    if(branch_able_arr[branch_num-1]){          // ì´ë¯¸ ê°œì„¤ ëœ ì§€ì ì¸ì§€ ê²€ì‚¬
+        printf(">> ì´ë¯¸ ê°œì„¤ëœ ì§€ì ì…ë‹ˆë‹¤.\n");
         return;
     }
-    // °³¼³µÇÁö ¾ÊÀº ÁöÁ¡ÀÌ¸é
+    // ê°œì„¤ë˜ì§€ ì•Šì€ ì§€ì ì´ë©´
     branch_able_char[branch_num-1] = '1';
     set_branch_able_info(branch_able_char);
     FILE* fp;
     open_file(&fp, get_branch_file_name(branch_num));
     fclose(fp);
-    printf("ÁöÁ¡ %dÀ» °³¼³Çß½À´Ï´Ù.\n", branch_num);
+    printf("ì§€ì  %dì„ ê°œì„¤í–ˆìŠµë‹ˆë‹¤.\n", branch_num);
 }
 
-// ÁöÁ¡ ¼öÁ¤ ¸ğµå
+// ì§€ì  ìˆ˜ì • ëª¨ë“œ
 void mode_mod_branch(int branch_num){
-    if(!branch_able_arr[branch_num-1]){          // °³¼³ ¿©ºÎ È®ÀÎ
-        printf(">> ¾ÆÁ÷ °³¼³µÇÁö ¾ÊÀº ÁöÁ¡ÀÔ´Ï´Ù.\n");
+    if(!branch_able_arr[branch_num-1]){          // ê°œì„¤ ì—¬ë¶€ í™•ì¸
+        printf(">> ì•„ì§ ê°œì„¤ë˜ì§€ ì•Šì€ ì§€ì ì…ë‹ˆë‹¤.\n");
         return;
     }
     get_branch_info(branch_num);
-    printf("---------<ÁöÁ¡%d ÇöÈ²>---------\n", branch_num);
+    printf("---------<ì§€ì %d í˜„í™©>---------\n", branch_num);
     for (int i = 1; i <= MAX_ROOM_NUM; i++) {
-        printf("    ½ºÅÍµğ ·ë %d", i);
-        if(room_able_arr[i-1]){                     // ½ºÅÍµğ ·ë °³¼³ µÇ¾úÀ¸¸é
-            printf(" (Çã¿ëÀÎ¿ø: %d, ¿¹¾à ÇöÈ²: %d°³)\n",room_capacity_arr[i-1],room_reserve_cnt_arr[i-1]);
+        printf("    ìŠ¤í„°ë”” ë£¸ %d", i);
+        if(room_able_arr[i-1]){                     // ìŠ¤í„°ë”” ë£¸ ê°œì„¤ ë˜ì—ˆìœ¼ë©´
+            printf(" (í—ˆìš©ì¸ì›: %d, ì˜ˆì•½ í˜„í™©: %dê°œ)\n",room_capacity_arr[i-1],room_reserve_cnt_arr[i-1]);
         }
-        else { printf(" (°³¼³µÇÁö ¾ÊÀ½)\n"); }      // °³¼³ ÀÌÀüÀÌ¸é
+        else { printf(" (ê°œì„¤ë˜ì§€ ì•ŠìŒ)\n"); }      // ê°œì„¤ ì´ì „ì´ë©´
     }
-    printf("ÃÊ±âÈ­¸é : (0)\n");
+    printf("ì´ˆê¸°í™”ë©´ : (0)\n");
     printf("-----------------------------\n");
-    printf("ÀÛ¾÷ÇÒ ½ºÅÍµğ ·ë ¹øÈ£¸¦ ¼±ÅÃÇÏ¼¼¿ä.\n>> ");    // ½ºÅÍµğ·ë ¹øÈ£ ÀÔ·Â ¹Ş±â
+    printf("ì‘ì—…í•  ìŠ¤í„°ë”” ë£¸ ë²ˆí˜¸ë¥¼ ì„ íƒí•˜ì„¸ìš”.\n>> ");    // ìŠ¤í„°ë””ë£¸ ë²ˆí˜¸ ì…ë ¥ ë°›ê¸°
     int input_room_selection = get_user_input();
     if(input_room_selection == 0) return;
     if(input_room_selection<0 || input_room_selection>5) {wrong_input(); return;}
 
-    printf(">>½ºÅÍµğ ·ë %d¿¡ ´ëÇÑ ÀÛ¾÷À» ¼±ÅÃÇÏ¼¼¿ä.\n", input_room_selection);   // ¼±ÅÃµÈ ÁöÁ¡¿¡ ´ëÇÑ ÀÛ¾÷ ÀÔ·Â ¹Ş±â
-    printf(" (1) Ãß°¡    (2) ¼öÁ¤    (3) »èÁ¦   (0) ÃÊ±â È­¸é\n");
+    printf(">>ìŠ¤í„°ë”” ë£¸ %dì— ëŒ€í•œ ì‘ì—…ì„ ì„ íƒí•˜ì„¸ìš”.\n", input_room_selection);   // ì„ íƒëœ ì§€ì ì— ëŒ€í•œ ì‘ì—… ì…ë ¥ ë°›ê¸°
+    printf(" (1) ì¶”ê°€    (2) ìˆ˜ì •    (3) ì‚­ì œ   (0) ì´ˆê¸° í™”ë©´\n");
     printf(">> ");
     switch(get_user_input()){
         case 1:
@@ -243,16 +243,16 @@ void mode_mod_branch(int branch_num){
 
 }
 
-// ÁöÁ¡ »èÁ¦ ¸ğµå
+// ì§€ì  ì‚­ì œ ëª¨ë“œ
 void mode_del_branch(int branch_num){
-    if(!branch_able_arr[branch_num-1]){          // ÀÌ¹Ì »èÁ¦ µÈ ÁöÁ¡ÀÎÁö °Ë»ç
-        printf(">> ÀÌ¹Ì »èÁ¦µÈ ÁöÁ¡ÀÔ´Ï´Ù.\n");
+    if(!branch_able_arr[branch_num-1]){          // ì´ë¯¸ ì‚­ì œ ëœ ì§€ì ì¸ì§€ ê²€ì‚¬
+        printf(">> ì´ë¯¸ ì‚­ì œëœ ì§€ì ì…ë‹ˆë‹¤.\n");
         return;
     }
 
     branch_able_char[branch_num-1] = '0';
     set_branch_able_info(branch_able_char);
-    // branch_%d_room_%d_info.dat »èÁ¦
+    // branch_%d_room_%d_info.dat ì‚­ì œ
     get_branch_info(branch_num);
     for (int i = 0; i < 6; i++) {
         if(room_able_arr[i]){
@@ -261,20 +261,20 @@ void mode_del_branch(int branch_num){
             delete_file(filename);
         }
     }
-    // branch_%d_info.dat »èÁ¦
+    // branch_%d_info.dat ì‚­ì œ
     delete_file(get_branch_file_name(branch_num));
     
-    printf("ÁöÁ¡ %dÀ» »èÁ¦Çß½À´Ï´Ù.\n", branch_num);
+    printf("ì§€ì  %dì„ ì‚­ì œí–ˆìŠµë‹ˆë‹¤.\n", branch_num);
 }
 
-// ½ºÅÍµğ ·ë Ãß°¡ ¸ğµå
+// ìŠ¤í„°ë”” ë£¸ ì¶”ê°€ ëª¨ë“œ
 void mode_add_room(int branch_num, int room_num){
-    if(room_able_arr[room_num-1]){          // ÀÌ¹Ì °³¼³ µÈ ½ºÅÍµğ ·ëÀÎÁö °Ë»ç
-        printf(">> ÀÌ¹Ì °³¼³µÈ ½ºÅÍµğ ·ëÀÔ´Ï´Ù.\n");
+    if(room_able_arr[room_num-1]){          // ì´ë¯¸ ê°œì„¤ ëœ ìŠ¤í„°ë”” ë£¸ì¸ì§€ ê²€ì‚¬
+        printf(">> ì´ë¯¸ ê°œì„¤ëœ ìŠ¤í„°ë”” ë£¸ì…ë‹ˆë‹¤.\n");
         return;
     }
-    // °³¼³µÇÁö ¾ÊÀº ÁöÁ¡ÀÌ¸é
-    printf(">> ½ºÅÍµğ ·ë %dÀÇ ÃÖ´ë Çã¿ë ÀÎ¿øÀ» ÀÔ·ÂÇÏ¼¼¿ä.(1~10)\n>>",room_num);
+    // ê°œì„¤ë˜ì§€ ì•Šì€ ì§€ì ì´ë©´
+    printf(">> ìŠ¤í„°ë”” ë£¸ %dì˜ ìµœëŒ€ í—ˆìš© ì¸ì›ì„ ì…ë ¥í•˜ì„¸ìš”.(1~10)\n>>",room_num);
     int max_capacity = get_user_input();
     char ten, one;
     if(max_capacity>10 || max_capacity < 1){
@@ -300,21 +300,21 @@ void mode_add_room(int branch_num, int room_num){
     FILE* temp_fp;      
     open_file(&temp_fp, filename);
     fclose(temp_fp);
-    printf("½ºÅÍµğ ·ë %dÀ» °³¼³Çß½À´Ï´Ù.\n", room_num);
+    printf("ìŠ¤í„°ë”” ë£¸ %dì„ ê°œì„¤í–ˆìŠµë‹ˆë‹¤.\n", room_num);
 }            
 
-// ½ºÅÍµğ ·ë ¼öÁ¤ ¸ğµå
+// ìŠ¤í„°ë”” ë£¸ ìˆ˜ì • ëª¨ë“œ
 void mode_mod_room(int branch_num, int room_num){
-    if(!room_able_arr[room_num-1]){          // °³¼³ µÈ ÁöÁ¡ÀÎÁö °Ë»ç
-        printf(">> °³¼³µÇÁö ¾ÊÀº ½ºÅÍµğ ·ëÀÔ´Ï´Ù.\n");
+    if(!room_able_arr[room_num-1]){          // ê°œì„¤ ëœ ì§€ì ì¸ì§€ ê²€ì‚¬
+        printf(">> ê°œì„¤ë˜ì§€ ì•Šì€ ìŠ¤í„°ë”” ë£¸ì…ë‹ˆë‹¤.\n");
         return;
     }
     get_branch_info(branch_num);
     if(room_reserve_cnt_arr[branch_num-1] > 0){
-        printf(">> ¿¹¾àÀÌ Á¸ÀçÇÏ´Â ½ºÅÍµğ ·ëÀÇ Á¤º¸¸¦ ¼öÁ¤ÇÒ ¼ö ¾ø½À´Ï´Ù.\n");
+        printf(">> ì˜ˆì•½ì´ ì¡´ì¬í•˜ëŠ” ìŠ¤í„°ë”” ë£¸ì˜ ì •ë³´ë¥¼ ìˆ˜ì •í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.\n");
         return;
     }
-    printf(">> ½ºÅÍµğ ·ë %dÀÇ º¯°æÇÒ ÃÖ´ë ÀÎ¿ø ¼ö¸¦ ÀÔ·ÂÇÏ¼¼¿ä. (ÇöÀç : %d)\n>>",room_num,room_capacity_arr[room_num]);
+    printf(">> ìŠ¤í„°ë”” ë£¸ %dì˜ ë³€ê²½í•  ìµœëŒ€ ì¸ì› ìˆ˜ë¥¼ ì…ë ¥í•˜ì„¸ìš”. (í˜„ì¬ : %d)\n>>",room_num,room_capacity_arr[room_num]);
     int max_capacity = get_user_input();
     char ten,one;
     if(max_capacity>10 || max_capacity < 1){
@@ -331,38 +331,38 @@ void mode_mod_room(int branch_num, int room_num){
     set_room_capacity_info(room_capacity_char, branch_num);
 }             
 
-// ½ºÅÍµğ ·ë »èÁ¦ ¸ğµå
+// ìŠ¤í„°ë”” ë£¸ ì‚­ì œ ëª¨ë“œ
 void mode_del_room(int branch_num, int room_num){
-    if(!room_able_arr[room_num-1]){          // ÀÌ¹Ì »èÁ¦ µÈ ÁöÁ¡ÀÎÁö °Ë»ç
-        printf(">> ÀÌ¹Ì »èÁ¦µÈ ½ºÅÍµğ ·ëÀÔ´Ï´Ù.\n");
+    if(!room_able_arr[room_num-1]){          // ì´ë¯¸ ì‚­ì œ ëœ ì§€ì ì¸ì§€ ê²€ì‚¬
+        printf(">> ì´ë¯¸ ì‚­ì œëœ ìŠ¤í„°ë”” ë£¸ì…ë‹ˆë‹¤.\n");
         return;
     }
 
-    // branch_%d_info.dat. ÃÊ±âÈ­
+    // branch_%d_info.dat. ì´ˆê¸°í™”
     room_able_char[room_num-1] = '0';
     room_capacity_char[(room_num-1)*2] = '0'; room_capacity_char[(room_num-1)*2+1] = '0';
     room_reserve_cnt_char[(room_num-1)*2] = '0'; room_reserve_cnt_char[(room_num-1)*2+1] = '0';
     set_room_able_info(room_able_char, branch_num);
     set_room_capacity_info(room_capacity_char, branch_num);
     set_room_reserve_cnt_info(room_reserve_cnt_char,branch_num);
-    // branch_%d_room_%d_info.dat »èÁ¦
+    // branch_%d_room_%d_info.dat ì‚­ì œ
     char* filename = (char*)malloc(28);
     sprintf(filename, room_format, branch_num, room_num);            
     delete_file(filename);
-    printf("½ºÅÍµğ ·ë %dÀ» »èÁ¦Çß½À´Ï´Ù.\n", room_num);
+    printf("ìŠ¤í„°ë”” ë£¸ %dì„ ì‚­ì œí–ˆìŠµë‹ˆë‹¤.\n", room_num);
 }                 
 
 
 
-// »ç¿ëÀÚ ¸ğµå ÃÊ±â È­¸é
+// ì‚¬ìš©ì ëª¨ë“œ ì´ˆê¸° í™”ë©´
 void mode_user(void){
-    printf(">> »ç¿ëÀÚ ID¸¦ ÀÔ·ÂÇÏ¼¼¿ä(5~10±ÛÀÚ) : ");
+    printf(">> ì‚¬ìš©ì IDë¥¼ ì…ë ¥í•˜ì„¸ìš”(5~10ê¸€ì) : ");
     gets(user_id);
     int user_input_len = strlen(user_id);
     if(user_input_len < 5 || user_input_len >10) {wrong_input(); return;}
 
-    printf(">>¼öÇàÇÒ ÀÛ¾÷À» ¼±ÅÃÇÏ¼¼¿ä.\n");
-    printf(" (1) ½ºÅÍµğ °ø°£ Á¶È¸    (2) ½Å±Ô ¿¹¾à    (3) ¿¹¾à ¼öÁ¤   (0) ÃÊ±â È­¸é\n");
+    printf(">>ìˆ˜í–‰í•  ì‘ì—…ì„ ì„ íƒí•˜ì„¸ìš”.\n");
+    printf(" (1) ìŠ¤í„°ë”” ê³µê°„ ì¡°íšŒ    (2) ì‹ ê·œ ì˜ˆì•½    (3) ì˜ˆì•½ ìˆ˜ì •   (0) ì´ˆê¸° í™”ë©´\n");
     printf(">> ");
     switch(get_user_input()){
         case 1:
@@ -384,101 +384,101 @@ void mode_user(void){
 
 }
 
-// ½ºÅÍµğ °ø°£ Á¶È¸
+// ìŠ¤í„°ë”” ê³µê°„ ì¡°íšŒ
 void mode_lookup_rooms(void){
-    get_branch_able_info();                  // branch_able_char ¿¡ Á¤º¸ ÀúÀå
-    printf("---------<ÁöÁ¡ ÇöÈ²>---------\n");
+    get_branch_able_info();                  // branch_able_char ì— ì •ë³´ ì €ì¥
+    printf("---------<ì§€ì  í˜„í™©>---------\n");
     for (int i = 1; i <= BRANCH_NUM; i++) {
-        printf("    ÁöÁ¡ %d", i);
-        if(branch_able_arr[i-1]){                  // ÁöÁ¡ °³¼³ µÇ¾úÀ¸¸é
-            printf(" (°³¼³µÊ)\n");
+        printf("    ì§€ì  %d", i);
+        if(branch_able_arr[i-1]){                  // ì§€ì  ê°œì„¤ ë˜ì—ˆìœ¼ë©´
+            printf(" (ê°œì„¤ë¨)\n");
         }
-        else { printf(" (°³¼³µÇÁö ¾ÊÀ½)\n"); }  // °³¼³ ÀÌÀüÀÌ¸é
+        else { printf(" (ê°œì„¤ë˜ì§€ ì•ŠìŒ)\n"); }  // ê°œì„¤ ì´ì „ì´ë©´
     }
-    printf("ÃÊ±â È­¸é : (0)\n");
+    printf("ì´ˆê¸° í™”ë©´ : (0)\n");
     printf("-----------------------------\n");
-    printf(">> Á¶È¸ÇÒ ÁöÁ¡À» ¼±ÅÃÇÏ¼¼¿ä.\n>>");
+    printf(">> ì¡°íšŒí•  ì§€ì ì„ ì„ íƒí•˜ì„¸ìš”.\n>>");
     int input_branch_selection = get_user_input();
     if(input_branch_selection != 1 && input_branch_selection != 2 &&input_branch_selection != 3 &&input_branch_selection != 4 &&input_branch_selection != 5 && input_branch_selection != 6){
         wrong_input();
         return;
     }
     if(input_branch_selection == 0) return;
-        if(!branch_able_arr[input_branch_selection-1]){          // °³¼³ ¿©ºÎ È®ÀÎ
-        printf(">> ¾ÆÁ÷ °³¼³µÇÁö ¾ÊÀº ÁöÁ¡ÀÔ´Ï´Ù.\n");
+        if(!branch_able_arr[input_branch_selection-1]){          // ê°œì„¤ ì—¬ë¶€ í™•ì¸
+        printf(">> ì•„ì§ ê°œì„¤ë˜ì§€ ì•Šì€ ì§€ì ì…ë‹ˆë‹¤.\n");
         return;
     }
     get_branch_info(input_branch_selection);
-    printf("---------<ÁöÁ¡%d ÇöÈ²>---------\n", input_branch_selection);
+    printf("---------<ì§€ì %d í˜„í™©>---------\n", input_branch_selection);
     for (int i = 1; i <= MAX_ROOM_NUM; i++) {
-        printf("    ½ºÅÍµğ ·ë %d", i);
-        if(room_able_arr[i-1]){                     // ½ºÅÍµğ ·ë °³¼³ µÇ¾úÀ¸¸é
-            printf(" (Çã¿ëÀÎ¿ø: %d, ¿¹¾à ÇöÈ²: %d°³)\n",room_capacity_arr[i-1],room_reserve_cnt_arr[i-1]);
+        printf("    ìŠ¤í„°ë”” ë£¸ %d", i);
+        if(room_able_arr[i-1]){                     // ìŠ¤í„°ë”” ë£¸ ê°œì„¤ ë˜ì—ˆìœ¼ë©´
+            printf(" (í—ˆìš©ì¸ì›: %d, ì˜ˆì•½ í˜„í™©: %dê°œ)\n",room_capacity_arr[i-1],room_reserve_cnt_arr[i-1]);
         }
-        else { printf(" (°³¼³µÇÁö ¾ÊÀ½)\n"); }      // °³¼³ ÀÌÀüÀÌ¸é
+        else { printf(" (ê°œì„¤ë˜ì§€ ì•ŠìŒ)\n"); }      // ê°œì„¤ ì´ì „ì´ë©´
     }
     printf("-----------------------------\n");
 }                   
 
-// ½Å±Ô ¿¹¾à
+// ì‹ ê·œ ì˜ˆì•½
 void mode_add_reserve(void){
-    get_branch_able_info();                  // branch_able_char ¿¡ Á¤º¸ ÀúÀå
-    printf("---------<ÁöÁ¡ ÇöÈ²>---------\n");
+    get_branch_able_info();                  // branch_able_char ì— ì •ë³´ ì €ì¥
+    printf("---------<ì§€ì  í˜„í™©>---------\n");
     for (int i = 1; i <= BRANCH_NUM; i++) {
-        printf("    ÁöÁ¡ %d", i);
-        if(branch_able_arr[i-1]){                  // ÁöÁ¡ °³¼³ µÇ¾úÀ¸¸é
-            printf(" (°³¼³µÊ)\n");
+        printf("    ì§€ì  %d", i);
+        if(branch_able_arr[i-1]){                  // ì§€ì  ê°œì„¤ ë˜ì—ˆìœ¼ë©´
+            printf(" (ê°œì„¤ë¨)\n");
         }
-        else { printf(" (°³¼³µÇÁö ¾ÊÀ½)\n"); }  // °³¼³ ÀÌÀüÀÌ¸é
+        else { printf(" (ê°œì„¤ë˜ì§€ ì•ŠìŒ)\n"); }  // ê°œì„¤ ì´ì „ì´ë©´
     }
-    printf("ÃÊ±â È­¸é : (0)\n");
+    printf("ì´ˆê¸° í™”ë©´ : (0)\n");
     printf("-----------------------------\n");
-    printf(">> ¿¹¾àÇÒ ÁöÁ¡À» ¼±ÅÃÇÏ¼¼¿ä.\n>>");
+    printf(">> ì˜ˆì•½í•  ì§€ì ì„ ì„ íƒí•˜ì„¸ìš”.\n>>");
     int input_branch_selection = get_user_input();
     if(input_branch_selection != 1 && input_branch_selection != 2 &&input_branch_selection != 3 &&input_branch_selection != 4 &&input_branch_selection != 5 && input_branch_selection != 6){
         wrong_input();
         return;
     }
     if(input_branch_selection == 0) return;
-        if(!branch_able_arr[input_branch_selection-1]){          // °³¼³ ¿©ºÎ È®ÀÎ
-        printf(">> ¾ÆÁ÷ °³¼³µÇÁö ¾ÊÀº ÁöÁ¡ÀÔ´Ï´Ù.\n");
+        if(!branch_able_arr[input_branch_selection-1]){          // ê°œì„¤ ì—¬ë¶€ í™•ì¸
+        printf(">> ì•„ì§ ê°œì„¤ë˜ì§€ ì•Šì€ ì§€ì ì…ë‹ˆë‹¤.\n");
         return;
     }
     get_branch_info(input_branch_selection);
-    printf("---------<ÁöÁ¡%d ÇöÈ²>---------\n", input_branch_selection);
+    printf("---------<ì§€ì %d í˜„í™©>---------\n", input_branch_selection);
     for (int i = 1; i <= MAX_ROOM_NUM; i++) {
-        printf("    ½ºÅÍµğ ·ë %d", i);
-        if(room_able_arr[i-1]){                     // ½ºÅÍµğ ·ë °³¼³ µÇ¾úÀ¸¸é
-            printf(" (Çã¿ëÀÎ¿ø: %d, ¿¹¾à ÇöÈ²: %d°³)\n",room_capacity_arr[i-1],room_reserve_cnt_arr[i-1]);
+        printf("    ìŠ¤í„°ë”” ë£¸ %d", i);
+        if(room_able_arr[i-1]){                     // ìŠ¤í„°ë”” ë£¸ ê°œì„¤ ë˜ì—ˆìœ¼ë©´
+            printf(" (í—ˆìš©ì¸ì›: %d, ì˜ˆì•½ í˜„í™©: %dê°œ)\n",room_capacity_arr[i-1],room_reserve_cnt_arr[i-1]);
         }
-        else { printf(" (°³¼³µÇÁö ¾ÊÀ½)\n"); }      // °³¼³ ÀÌÀüÀÌ¸é
+        else { printf(" (ê°œì„¤ë˜ì§€ ì•ŠìŒ)\n"); }      // ê°œì„¤ ì´ì „ì´ë©´
     }
-    printf("ÃÊ±â È­¸é : (0)\n");
+    printf("ì´ˆê¸° í™”ë©´ : (0)\n");
     printf("-----------------------------\n");
-    printf("¿¹¾àÇÒ ½ºÅÍµğ ·ë ¹øÈ£¸¦ ¼±ÅÃÇÏ¼¼¿ä.\n>> ");    // ½ºÅÍµğ·ë ¹øÈ£ ÀÔ·Â ¹Ş±â
+    printf("ì˜ˆì•½í•  ìŠ¤í„°ë”” ë£¸ ë²ˆí˜¸ë¥¼ ì„ íƒí•˜ì„¸ìš”.\n>> ");    // ìŠ¤í„°ë””ë£¸ ë²ˆí˜¸ ì…ë ¥ ë°›ê¸°
     int input_room_selection = get_user_input();
     if(input_room_selection == 0) return;
     if(input_room_selection<0 || input_room_selection>5) {wrong_input(); return;}
     
-    printf("¿¹¾àÇÒ ³¯Â¥¸¦ ÀÔ·ÂÇÏ¼¼¿ä(YYMMDD). (ÃÊ±â È­¸é : 0)\n>> ");       // ¿¹¾àÀÏÀÚ ÀÔ·Â ¹Ş±â
+    printf("ì˜ˆì•½í•  ë‚ ì§œë¥¼ ì…ë ¥í•˜ì„¸ìš”(YYMMDD). (ì´ˆê¸° í™”ë©´ : 0)\n>> ");       // ì˜ˆì•½ì¼ì ì…ë ¥ ë°›ê¸°
     int input_reserved_date;
     scanf("%d", &input_reserved_date);
     if(input_reserved_date == 0) return;
-    printf("¿¹¾à ½Ã°£À» ÀÔ·ÂÇÏ¼¼¿ä(8½Ã~22½Ã). (ÃÊ±â È­¸é : 0)\n>> ");       // »ç¿ë ½ÃÀÛ½Ã°£ ÀÔ·Â
+    printf("ì˜ˆì•½ ì‹œê°„ì„ ì…ë ¥í•˜ì„¸ìš”(8ì‹œ~22ì‹œ). (ì´ˆê¸° í™”ë©´ : 0)\n>> ");       // ì‚¬ìš© ì‹œì‘ì‹œê°„ ì…ë ¥
     int input_reserved_time;
     scanf("%d", &input_reserved_time);
     if(input_reserved_time == 0) return;
-    printf("»ç¿ë ½Ã°£À» ÀÔ·ÂÇÏ¼¼¿ä. (ÃÊ±â È­¸é : 0)\n>> ");                 // »ç¿ë½Ã°£ ÀÔ·Â
+    printf("ì‚¬ìš© ì‹œê°„ì„ ì…ë ¥í•˜ì„¸ìš”. (ì´ˆê¸° í™”ë©´ : 0)\n>> ");                 // ì‚¬ìš©ì‹œê°„ ì…ë ¥
     int input_using_time;
     scanf("%d", &input_using_time);
     if(input_using_time == 0) return;
-    printf("»ç¿ë ÀÎ¿øÀ» ÀÔ·ÂÇÏ¼¼¿ä. (ÃÊ±â È­¸é : 0)\n>> ");                 // »ç¿ëÀÎ¿ø ÀÔ·Â
+    printf("ì‚¬ìš© ì¸ì›ì„ ì…ë ¥í•˜ì„¸ìš”. (ì´ˆê¸° í™”ë©´ : 0)\n>> ");                 // ì‚¬ìš©ì¸ì› ì…ë ¥
     int input_user_num;
     scanf("%d", &input_user_num);
     if(input_user_num == 0) return;
 
     if(input_user_num > room_capacity_arr[input_room_selection-1] || input_user_num < 1) {
-        printf(">> Çã¿ëÀÎ¿øÀ» ÃÊ°úÇß½À´Ï´Ù.\n");
+        printf(">> í—ˆìš©ì¸ì›ì„ ì´ˆê³¼í–ˆìŠµë‹ˆë‹¤.\n");
         wrong_input();
         return;
     }
@@ -498,26 +498,26 @@ void mode_add_reserve(void){
     room_reserve_cnt_char[(input_room_selection-1)*2] = ten;
     room_reserve_cnt_char[(input_room_selection-1)*2+1] = one;
     set_room_reserve_cnt_info(room_reserve_cnt_char, input_branch_selection);
-    printf(">> ¿¹¾àÀ» ¿Ï·áÇß½À´Ï´Ù. ÃÊ±â È­¸éÀ¸·Î µ¹¾Æ°©´Ï´Ù.\n");
+    printf(">> ì˜ˆì•½ì„ ì™„ë£Œí–ˆìŠµë‹ˆë‹¤. ì´ˆê¸° í™”ë©´ìœ¼ë¡œ ëŒì•„ê°‘ë‹ˆë‹¤.\n");
 }                    
 
-// ¿¹¾à ¼öÁ¤
+// ì˜ˆì•½ ìˆ˜ì •
 void mode_mod_reserve(void){
-    printf(">> '%s' ´ÔÀÇ ¿¹¾à Á¤º¸¸¦ ºÒ·¯¿É´Ï´Ù...\n", user_id);
+    printf(">> '%s' ë‹˜ì˜ ì˜ˆì•½ ì •ë³´ë¥¼ ë¶ˆëŸ¬ì˜µë‹ˆë‹¤...\n", user_id);
     get_branch_able_info();
     int cnt=0;
     RESERVE reserve_arr[100]; int branch_arr[100]; int room_arr[100]; int rnn_arr[100];
     for (int i = 1; i <= 6; i++) {
-        if(!branch_able_arr[i-1]) continue;         // ÇØ´ç ÁöÁ¡ °³¼³ ¾ÈµÇ¾úÀ¸¸é ÆĞ½º
+        if(!branch_able_arr[i-1]) continue;         // í•´ë‹¹ ì§€ì  ê°œì„¤ ì•ˆë˜ì—ˆìœ¼ë©´ íŒ¨ìŠ¤
         get_branch_info(i);
         for(int j = 1; j <= 5; j++){
-            if(!room_able_arr[j-1]) continue;       // ÇØ´ç ½ºÅÍµğ ·ë °³¼³ ¾ÈµÇ¾úÀ¸¸é ÆĞ½º
+            if(!room_able_arr[j-1]) continue;       // í•´ë‹¹ ìŠ¤í„°ë”” ë£¸ ê°œì„¤ ì•ˆë˜ì—ˆìœ¼ë©´ íŒ¨ìŠ¤
             for(int k=0; k < room_reserve_cnt_arr[j-1]; k++){
                 RESERVE r;
                 read_reserve(i,j,k,&r);
-                if(strcmp(r.user_id, user_id) == 0){        // id µ¿ÀÏÇÏ¸é Ãâ·Â
+                if(strcmp(r.user_id, user_id) == 0){        // id ë™ì¼í•˜ë©´ ì¶œë ¥
                     cnt++;
-                    printf(">> %d) ÁöÁ¡ %d, ½ºÅÍµğ·ë %d, ¿¹¾à id: %s, ¿¹¾à ³¯Â¥(YYMMDD): %d, ¿¹¾à ½Ã°£: %d½Ã, »ç¿ë½Ã°£: %d½Ã°£, »ç¿ëÀÎ¿ø: %d¸í\n",cnt,i,j, r.user_id,r.reserved_date,r.reserved_time, r.using_time, r.user_num);
+                    printf(">> %d) ì§€ì  %d, ìŠ¤í„°ë””ë£¸ %d, ì˜ˆì•½ id: %s, ì˜ˆì•½ ë‚ ì§œ(YYMMDD): %d, ì˜ˆì•½ ì‹œê°„: %dì‹œ, ì‚¬ìš©ì‹œê°„: %dì‹œê°„, ì‚¬ìš©ì¸ì›: %dëª…\n",cnt,i,j, r.user_id,r.reserved_date,r.reserved_time, r.using_time, r.user_num);
                     reserve_arr[cnt] = r;
                     branch_arr[cnt] = i;
                     room_arr[cnt] = j; 
@@ -526,43 +526,43 @@ void mode_mod_reserve(void){
         }
     }
     if(cnt == 0){
-        printf(">> ¿¹¾àµÈ Á¤º¸°¡ ¾ø½À´Ï´Ù. ÃÊ±â È­¸éÀ¸·Î µ¹¾Æ°©´Ï´Ù.\n");
+        printf(">> ì˜ˆì•½ëœ ì •ë³´ê°€ ì—†ìŠµë‹ˆë‹¤. ì´ˆê¸° í™”ë©´ìœ¼ë¡œ ëŒì•„ê°‘ë‹ˆë‹¤.\n");
         return;
     }
-    printf(">> ¼öÁ¤ÇÒ ¿¹¾à ¹øÈ£¸¦ ÀÔ·ÂÇÏ¼¼¿ä. (ÃÊ±â È­¸é : 0)\n>> ");
+    printf(">> ìˆ˜ì •í•  ì˜ˆì•½ ë²ˆí˜¸ë¥¼ ì…ë ¥í•˜ì„¸ìš”. (ì´ˆê¸° í™”ë©´ : 0)\n>> ");
     int reserve_num = get_user_input();
     if(reserve_num == 0) return;
     if(reserve_num<1 || reserve_num>cnt) {wrong_input(); return;}
     
-    printf(">> ¼öÁ¤µÈ ¿¹¾àÀÇ ÁöÁ¡ ¹øÈ£¸¦ ÀÔ·ÂÇÏ¼¼¿ä. (ÃÊ±â È­¸é : 0)\n>> ");
+    printf(">> ìˆ˜ì •ëœ ì˜ˆì•½ì˜ ì§€ì  ë²ˆí˜¸ë¥¼ ì…ë ¥í•˜ì„¸ìš”. (ì´ˆê¸° í™”ë©´ : 0)\n>> ");
     int branch_num = get_user_input();
     if(branch_num == 0) return;
     get_branch_able_info();
     if(!branch_able_arr[branch_num-1]){
-        printf(">> °³¼³µÇÁö ¾ÊÀº ÁöÁ¡ÀÔ´Ï´Ù.\n ÃÊ±â È­¸éÀ¸·Î µ¹¾Æ°©´Ï´Ù.\n");
+        printf(">> ê°œì„¤ë˜ì§€ ì•Šì€ ì§€ì ì…ë‹ˆë‹¤.\n ì´ˆê¸° í™”ë©´ìœ¼ë¡œ ëŒì•„ê°‘ë‹ˆë‹¤.\n");
         return;
     }
-    printf(">> ¼öÁ¤µÈ ¿¹¾àÀÇ ½ºÅÍµğ ·ë ¹øÈ£¸¦ ÀÔ·ÂÇÏ¼¼¿ä. (ÃÊ±â È­¸é : 0)\n>> ");
+    printf(">> ìˆ˜ì •ëœ ì˜ˆì•½ì˜ ìŠ¤í„°ë”” ë£¸ ë²ˆí˜¸ë¥¼ ì…ë ¥í•˜ì„¸ìš”. (ì´ˆê¸° í™”ë©´ : 0)\n>> ");
     int room_num = get_user_input();
     if(room_num == 0) return;
     get_branch_info(branch_num);
     if(!room_able_arr[room_num-1]){
-        printf(">> °³¼³µÇÁö ¾ÊÀº ½ºÅÍµğ ·ëÀÔ´Ï´Ù.\n ÃÊ±â È­¸éÀ¸·Î µ¹¾Æ°©´Ï´Ù.\n");
+        printf(">> ê°œì„¤ë˜ì§€ ì•Šì€ ìŠ¤í„°ë”” ë£¸ì…ë‹ˆë‹¤.\n ì´ˆê¸° í™”ë©´ìœ¼ë¡œ ëŒì•„ê°‘ë‹ˆë‹¤.\n");
         return;
     }
-    printf(">> ¼öÁ¤µÈ ¿¹¾àÀÇ ³¯Â¥¸¦ ÀÔ·ÂÇÏ¼¼¿ä(YYMMDD). (ÃÊ±â È­¸é : 0)\n>> ");    // ¿¹¾àÀÏÀÚ ÀÔ·Â ¹Ş±â
+    printf(">> ìˆ˜ì •ëœ ì˜ˆì•½ì˜ ë‚ ì§œë¥¼ ì…ë ¥í•˜ì„¸ìš”(YYMMDD). (ì´ˆê¸° í™”ë©´ : 0)\n>> ");    // ì˜ˆì•½ì¼ì ì…ë ¥ ë°›ê¸°
     int input_reserved_date;
     scanf("%d", &input_reserved_date);
     if(input_reserved_date == 0) return;
-    printf(">> ¼öÁ¤µÈ ¿¹¾àÀÇ ½Ã°£À» ÀÔ·ÂÇÏ¼¼¿ä(8½Ã~22½Ã). (ÃÊ±â È­¸é : 0)\n>> ");     // »ç¿ë ½ÃÀÛ½Ã°£ ÀÔ·Â
+    printf(">> ìˆ˜ì •ëœ ì˜ˆì•½ì˜ ì‹œê°„ì„ ì…ë ¥í•˜ì„¸ìš”(8ì‹œ~22ì‹œ). (ì´ˆê¸° í™”ë©´ : 0)\n>> ");     // ì‚¬ìš© ì‹œì‘ì‹œê°„ ì…ë ¥
     int input_reserved_time;
     scanf("%d", &input_reserved_time);
     if(input_reserved_time == 0) return;
-    printf(">> ¼öÁ¤µÈ ¿¹¾àÀÇ »ç¿ë ½Ã°£À» ÀÔ·ÂÇÏ¼¼¿ä. (ÃÊ±â È­¸é : 0)\n>> ");     // »ç¿ë½Ã°£ ÀÔ·Â
+    printf(">> ìˆ˜ì •ëœ ì˜ˆì•½ì˜ ì‚¬ìš© ì‹œê°„ì„ ì…ë ¥í•˜ì„¸ìš”. (ì´ˆê¸° í™”ë©´ : 0)\n>> ");     // ì‚¬ìš©ì‹œê°„ ì…ë ¥
     int input_using_time;
     scanf("%d", &input_using_time);
     if(input_using_time == 0) return;
-    printf(">> ¼öÁ¤µÈ ¿¹¾àÀÇ »ç¿ë ÀÎ¿øÀ» ÀÔ·ÂÇÏ¼¼¿ä. (ÃÊ±â È­¸é : 0)\n>> ");     // »ç¿ëÀÎ¿ø ÀÔ·Â
+    printf(">> ìˆ˜ì •ëœ ì˜ˆì•½ì˜ ì‚¬ìš© ì¸ì›ì„ ì…ë ¥í•˜ì„¸ìš”. (ì´ˆê¸° í™”ë©´ : 0)\n>> ");     // ì‚¬ìš©ì¸ì› ì…ë ¥
     int input_user_num;
     scanf("%d", &input_user_num);
     if(input_user_num == 0) return;
@@ -602,61 +602,61 @@ void mode_mod_reserve(void){
     room_reserve_cnt_char[(room_num-1)*2] = ten;
     room_reserve_cnt_char[(room_num-1)*2+1] = one;
     set_room_reserve_cnt_info(room_reserve_cnt_char, branch_num);
-    printf(">> ¿¹¾à ¼öÁ¤À» ¿Ï·áÇß½À´Ï´Ù. ÃÊ±â È­¸éÀ¸·Î µ¹¾Æ°©´Ï´Ù.\n");    
+    printf(">> ì˜ˆì•½ ìˆ˜ì •ì„ ì™„ë£Œí–ˆìŠµë‹ˆë‹¤. ì´ˆê¸° í™”ë©´ìœ¼ë¡œ ëŒì•„ê°‘ë‹ˆë‹¤.\n");    
 }
 
-// ÆÄÀÏ ¿­±â
+// íŒŒì¼ ì—´ê¸°
 void open_file(FILE** filestream, char filename[]){
-    FILE* check_file_exist = fopen(filename,"r");   // ÀÎÀÚ·Î ¹ŞÀº ÆÄÀÏ ¿­±â ½Ãµµ
-    if(check_file_exist == NULL){                   // ÆÄÀÏÀÌ ¾øÀ¸¸é
-        check_file_exist = fopen(filename, "w+");   // ÆÄÀÏ »ı¼º
-        fclose(check_file_exist);                   // »ı¼ºµÈ ÆÄÀÏ ´İ±â
+    FILE* check_file_exist = fopen(filename,"r");   // ì¸ìë¡œ ë°›ì€ íŒŒì¼ ì—´ê¸° ì‹œë„
+    if(check_file_exist == NULL){                   // íŒŒì¼ì´ ì—†ìœ¼ë©´
+        check_file_exist = fopen(filename, "w+");   // íŒŒì¼ ìƒì„±
+        fclose(check_file_exist);                   // ìƒì„±ëœ íŒŒì¼ ë‹«ê¸°
     }
     else{ fclose(check_file_exist); }
 
-    *filestream = fopen(filename,"r+");     // ÆÄÀÏ ¿­±â
-    if(filestream == NULL){                 // Àß ¿­·È´ÂÁö °Ë»ç
+    *filestream = fopen(filename,"r+");     // íŒŒì¼ ì—´ê¸°
+    if(filestream == NULL){                 // ì˜ ì—´ë ¸ëŠ”ì§€ ê²€ì‚¬
         printf("ERROR open_file() (file name: \"%s\")\n",filename);
         exit(1);
     }
 }
 
-// ÁöÁ¡ Á¤º¸ ºÒ·¯¿À±â
+// ì§€ì  ì •ë³´ ë¶ˆëŸ¬ì˜¤ê¸°
 void get_branch_able_info(void){
     FILE* fp;
-    open_file(&fp ,BRANCH_INFO_FILE_NAME);         // ÆÄÀÏ ¿­±â
-    if(is_file_empty(fp)){                         // ÆÄÀÏÀÌ ºñ¾îÀÖÀ¸¸é
-        init_branch_able_info(fp);                 // ÃÊ±âÈ­ (ÁöÁ¡ ¾øÀ½)
-        open_file(&fp ,BRANCH_INFO_FILE_NAME);     // ÆÄÀÏ ¿­±â
+    open_file(&fp ,BRANCH_INFO_FILE_NAME);         // íŒŒì¼ ì—´ê¸°
+    if(is_file_empty(fp)){                         // íŒŒì¼ì´ ë¹„ì–´ìˆìœ¼ë©´
+        init_branch_able_info(fp);                 // ì´ˆê¸°í™” (ì§€ì  ì—†ìŒ)
+        open_file(&fp ,BRANCH_INFO_FILE_NAME);     // íŒŒì¼ ì—´ê¸°
     }
     
-    fseek(fp, 0, SEEK_SET);            // ÆÄÀÏ Æ÷ÀÎÅÍ ½ÃÀÛÁ¡ ¼³Á¤
-    fread(branch_able_char,strlen(branch_able_char), sizeof(char),fp);   // ÀĞ±â
+    fseek(fp, 0, SEEK_SET);            // íŒŒì¼ í¬ì¸í„° ì‹œì‘ì  ì„¤ì •
+    fread(branch_able_char,strlen(branch_able_char), sizeof(char),fp);   // ì½ê¸°
     for (int i = 0; i < 6; i++) {
-        if(branch_able_char[i] == '0'){             // char Çü¿¡¼­ bool Çü ¹è¿­·Î º¯È¯
+        if(branch_able_char[i] == '0'){             // char í˜•ì—ì„œ bool í˜• ë°°ì—´ë¡œ ë³€í™˜
             branch_able_arr[i] = false;          
         }
         else { branch_able_arr[i] = true; }
     }
 
-    fclose(fp);                        // Á¤º¸ ´Ù ÀĞ°í ÆÄÀÏ ´İ±â
+    fclose(fp);                        // ì •ë³´ ë‹¤ ì½ê³  íŒŒì¼ ë‹«ê¸°
 }
 
 //
 void get_branch_info(int branch_num){
     FILE* fp;    
-    open_file(&fp ,get_branch_file_name(branch_num));         // ÆÄÀÏ ¿­±â
-    if(is_file_empty(fp)){                                    // ÆÄÀÏÀÌ ºñ¾îÀÖÀ¸¸é
-        init_branch_info(branch_num);                         // ÃÊ±âÈ­ (ÁöÁ¡ ¾øÀ½)
-        // open_file(&fp ,get_branch_file_name(branch_num));     // ÆÄÀÏ ¿­±â
+    open_file(&fp ,get_branch_file_name(branch_num));         // íŒŒì¼ ì—´ê¸°
+    if(is_file_empty(fp)){                                    // íŒŒì¼ì´ ë¹„ì–´ìˆìœ¼ë©´
+        init_branch_info(branch_num);                         // ì´ˆê¸°í™” (ì§€ì  ì—†ìŒ)
+        // open_file(&fp ,get_branch_file_name(branch_num));     // íŒŒì¼ ì—´ê¸°
     }
     
-    fseek(fp, 0, SEEK_SET);            // ÆÄÀÏ Æ÷ÀÎÅÍ ½ÃÀÛÁ¡ ¼³Á¤
-    fread(room_able_char,strlen(room_able_char), sizeof(char),fp);   // ÀĞ±â    
-    fseek(fp, SIZE_ROOM_ABLE, SEEK_SET);            // ÆÄÀÏ Æ÷ÀÎÅÍ ½ÃÀÛÁ¡ ¼³Á¤
-    fread(room_capacity_char,strlen(room_capacity_char), sizeof(char),fp);   // ÀĞ±â    
-    fseek(fp, SIZE_ROOM_ABLE + SIZE_ROOM_CAPACITY, SEEK_SET);            // ÆÄÀÏ Æ÷ÀÎÅÍ ½ÃÀÛÁ¡ ¼³Á¤
-    fread(room_reserve_cnt_char,strlen(room_reserve_cnt_char), sizeof(char),fp);   // ÀĞ±â
+    fseek(fp, 0, SEEK_SET);            // íŒŒì¼ í¬ì¸í„° ì‹œì‘ì  ì„¤ì •
+    fread(room_able_char,strlen(room_able_char), sizeof(char),fp);   // ì½ê¸°    
+    fseek(fp, SIZE_ROOM_ABLE, SEEK_SET);            // íŒŒì¼ í¬ì¸í„° ì‹œì‘ì  ì„¤ì •
+    fread(room_capacity_char,strlen(room_capacity_char), sizeof(char),fp);   // ì½ê¸°    
+    fseek(fp, SIZE_ROOM_ABLE + SIZE_ROOM_CAPACITY, SEEK_SET);            // íŒŒì¼ í¬ì¸í„° ì‹œì‘ì  ì„¤ì •
+    fread(room_reserve_cnt_char,strlen(room_reserve_cnt_char), sizeof(char),fp);   // ì½ê¸°
 
     // printf("room_able_arr[]: ");
     for (int i = 0; i < 5; i++) {
@@ -678,23 +678,23 @@ void get_branch_info(int branch_num){
     fclose(fp);
 }
 
-// ÆÄÀÏÀÌ ºñ¾îÀÖ´ÂÁö °Ë»ç
+// íŒŒì¼ì´ ë¹„ì–´ìˆëŠ”ì§€ ê²€ì‚¬
 bool is_file_empty(FILE *filestream){
     fseek(filestream, 0, SEEK_END);
     int file_size = ftell(filestream);
 
-    if(file_size < 1) return true;          // ÆÄÀÏ ºñ¾úÀ½
-    return false;                           // ÆÄÀÏ ¾Èºñ¾úÀ½
+    if(file_size < 1) return true;          // íŒŒì¼ ë¹„ì—ˆìŒ
+    return false;                           // íŒŒì¼ ì•ˆë¹„ì—ˆìŒ
 }
 
-// branch_able_info.txt. ÃÊ±âÈ­
+// branch_able_info.txt. ì´ˆê¸°í™”
 void init_branch_able_info(FILE* filestream){
     char branch_able_info_init_string[] = "000000";
     if(fwrite(branch_able_info_init_string, strlen(branch_able_info_init_string), sizeof(char),filestream) < 1){
         printf("error in init branch able info!\n");
         exit(1);
     }
-    fclose(filestream);               // ÆÄÀÏ ´İ¾Æ¼­ ÀúÀå
+    fclose(filestream);               // íŒŒì¼ ë‹«ì•„ì„œ ì €ì¥
 }
 
 //
@@ -725,17 +725,17 @@ void init_branch_info(int branch_num){
     fclose(fp);
 }
 
-// branch_able_info.txt °»½Å
+// branch_able_info.txt ê°±ì‹ 
 void set_branch_able_info(char new_branch_info[]){
     FILE* fp;
-    open_file(&fp ,BRANCH_INFO_FILE_NAME);         // brnach_info.txt ÆÄÀÏ ¿­±â
+    open_file(&fp ,BRANCH_INFO_FILE_NAME);         // brnach_info.txt íŒŒì¼ ì—´ê¸°
     if(fwrite(new_branch_info, strlen(new_branch_info), sizeof(char),fp) < 1){
         printf("error in set branch able info!\n");
         exit(1);
     }
-    fclose(fp);               // ÆÄÀÏ ´İ¾Æ¼­ ÀúÀå
+    fclose(fp);               // íŒŒì¼ ë‹«ì•„ì„œ ì €ì¥
 }  
-// branch_n_info.dat °»½Å
+// branch_n_info.dat ê°±ì‹ 
 void set_room_able_info(char new_room_info[], int branch_num){
     FILE* fp;
     open_file(&fp, get_branch_file_name(branch_num));
@@ -743,7 +743,7 @@ void set_room_able_info(char new_room_info[], int branch_num){
         printf("error in set room able info!\n");
         exit(1);
     }
-    fclose(fp);               // ÆÄÀÏ ´İ¾Æ¼­ ÀúÀå
+    fclose(fp);               // íŒŒì¼ ë‹«ì•„ì„œ ì €ì¥
 }
 
 void set_room_capacity_info(char new_room_capacity_info[], int branch_num){
@@ -754,7 +754,7 @@ void set_room_capacity_info(char new_room_capacity_info[], int branch_num){
         printf("error in set room capacity info!\n");
         exit(1);
     }
-    fclose(fp);               // ÆÄÀÏ ´İ¾Æ¼­ ÀúÀå
+    fclose(fp);               // íŒŒì¼ ë‹«ì•„ì„œ ì €ì¥
 }
 
 void set_room_reserve_cnt_info(char new_room_reserve_cnt_info[], int branch_num){
@@ -765,10 +765,10 @@ void set_room_reserve_cnt_info(char new_room_reserve_cnt_info[], int branch_num)
         printf("error in set room reserve_cnt info!\n");
         exit(1);
     }
-    fclose(fp);               // ÆÄÀÏ ´İ¾Æ¼­ ÀúÀå
+    fclose(fp);               // íŒŒì¼ ë‹«ì•„ì„œ ì €ì¥
 }
 
-// ÆÄÀÏ »èÁ¦
+// íŒŒì¼ ì‚­ì œ
 void delete_file(char filename[]){
     if(remove(filename)==0){
         return;
@@ -780,7 +780,7 @@ void delete_file(char filename[]){
 
 }                
 
-// n¹øÁöÁ¡ n¹ø ·ë n¹øÂ° ¿¹¾à ÀĞ¾î¿À±â
+// në²ˆì§€ì  në²ˆ ë£¸ në²ˆì§¸ ì˜ˆì•½ ì½ì–´ì˜¤ê¸°
 void read_reserve(int branch_num, int room_num, int rnn, RESERVE* r){
     FILE* fp;
     char* filename = (char*) malloc(SIZE_ROOM_INFO_FILE_NAME);
@@ -792,7 +792,7 @@ void read_reserve(int branch_num, int room_num, int rnn, RESERVE* r){
     fclose(fp);
 }                
 
-// n¹øÁöÁ¡ n¹ø ·ë n¹øÂ° ¿¹¾à ¾²±â  
+// në²ˆì§€ì  në²ˆ ë£¸ në²ˆì§¸ ì˜ˆì•½ ì“°ê¸°  
 void write_reserve(int branch_num, int room_num, int rnn, RESERVE* r){
     FILE* fp;
     char* filename = (char*) malloc(SIZE_ROOM_INFO_FILE_NAME);
@@ -804,7 +804,7 @@ void write_reserve(int branch_num, int room_num, int rnn, RESERVE* r){
     fclose(fp);
 }      
 
-// n¹øÁöÁ¡ n¹ø ·ë rnn¹øÂ° ¿¹¾à Áö¿ì±â
+// në²ˆì§€ì  në²ˆ ë£¸ rnnë²ˆì§¸ ì˜ˆì•½ ì§€ìš°ê¸°
 void delete_reserve(int branch_num, int room_num, int rnn){
     FILE* fp;
     char* filename = (char*)malloc(SIZE_ROOM_INFO_FILE_NAME);
@@ -813,9 +813,9 @@ void delete_reserve(int branch_num, int room_num, int rnn){
     get_branch_info(branch_num);
     int reserve_cnt = room_reserve_cnt_arr[room_num-1];
     RESERVE r;
-    // ¸¶Áö¸· ¿¹¾àÁ¤º¸ ÀĞ¾î¿À±â
+    // ë§ˆì§€ë§‰ ì˜ˆì•½ì •ë³´ ì½ì–´ì˜¤ê¸°
     read_reserve(branch_num,room_num, (reserve_cnt-1), &r);
-    // ÀĞ¾î¿Â°Å Áö¿ï ¿¹¾àÁ¤º¸¿¡ µ¤¾î¾²±â
+    // ì½ì–´ì˜¨ê±° ì§€ìš¸ ì˜ˆì•½ì •ë³´ì— ë®ì–´ì“°ê¸°
     write_reserve(branch_num,room_num, rnn, &r);
 
     // reserve_cnt-1
@@ -827,63 +827,63 @@ void delete_reserve(int branch_num, int room_num, int rnn){
     free(filename);
 }
 
-// ¿¹¾à ³¯Â¥ °¡´É¿©ºÎ
+// ì˜ˆì•½ ë‚ ì§œ ê°€ëŠ¥ì—¬ë¶€
 bool is_reserve_able(int reserved_date, int reserved_time, int using_time, int branch_num, int room__num){
     int temp_date = reserved_date; int len=0;
-    // date ¹®ÀÚ¿­ ±æÀÌ °Ë»ç
+    // date ë¬¸ìì—´ ê¸¸ì´ ê²€ì‚¬
     while(temp_date !=0){
         temp_date /= 10;
         len++;
     }
     if(len != 6) {
-        printf(">> ³¯Â¥ Á¤º¸´Â 6ÀÚ¸® ¼ıÀÚÀÔ´Ï´Ù.\n");
+        printf(">> ë‚ ì§œ ì •ë³´ëŠ” 6ìë¦¬ ìˆ«ìì…ë‹ˆë‹¤.\n");
         return false;
     }
-    // ´çÀÏ ¿¹¾à °Ë»ç
+    // ë‹¹ì¼ ì˜ˆì•½ ê²€ì‚¬
     time_t curr_t = time(NULL);
     struct tm* t = localtime(&curr_t);
     int today_year = (t->tm_year+1900)%100; int today_mon = t->tm_mon+1; int today_day = t->tm_mday;
     int r_year = reserved_date/10000; int r_mon = (reserved_date%10000)/100; int r_day = (reserved_date%100);
     if(today_year > r_year){
-        printf(">> ¿¹¾àÀÌ ºÒ°¡´ÉÇÑ ³¯Â¥ÀÔ´Ï´Ù.\n");
+        printf(">> ì˜ˆì•½ì´ ë¶ˆê°€ëŠ¥í•œ ë‚ ì§œì…ë‹ˆë‹¤.\n");
         return false;
     }    // 2022 2021
     else if(today_year == r_year){
         if(today_mon > r_mon){
-        printf(">> ¿¹¾àÀÌ ºÒ°¡´ÉÇÑ ³¯Â¥ÀÔ´Ï´Ù.\n");
+        printf(">> ì˜ˆì•½ì´ ë¶ˆê°€ëŠ¥í•œ ë‚ ì§œì…ë‹ˆë‹¤.\n");
         return false;
         }
         else if(today_mon == r_mon){
             if(today_day >= r_day) {
-                printf(">> ¿¹¾àÀÌ ºÒ°¡´ÉÇÑ ³¯Â¥ÀÔ´Ï´Ù.\n");
+                printf(">> ì˜ˆì•½ì´ ë¶ˆê°€ëŠ¥í•œ ë‚ ì§œì…ë‹ˆë‹¤.\n");
                 return false;
             }
         }
     } 
 
-    // 8½Ã ~ 22½Ã °Ë»ç
+    // 8ì‹œ ~ 22ì‹œ ê²€ì‚¬
     int start = reserved_time; int end = reserved_time + using_time;
     if(start < 8 || start >= 22) {
-        printf(">> 8½Ã¿Í 22½Ã »çÀÌ¸¦ ÀÔ·ÂÇÏ¼¼¿ä.\n");
+        printf(">> 8ì‹œì™€ 22ì‹œ ì‚¬ì´ë¥¼ ì…ë ¥í•˜ì„¸ìš”.\n");
         return false;
     }
     if(end < 8 || end > 22){
-        printf(">> 8½Ã¿Í 22½Ã »çÀÌ¸¦ ÀÔ·ÂÇÏ¼¼¿ä.\n");
+        printf(">> 8ì‹œì™€ 22ì‹œ ì‚¬ì´ë¥¼ ì…ë ¥í•˜ì„¸ìš”.\n");
         return false;
     }
 
-    // ´Ù¸¥ ¿¹¾àÀÌ¶û °ãÄ¡´Â Áö °Ë»ç
+    // ë‹¤ë¥¸ ì˜ˆì•½ì´ë‘ ê²¹ì¹˜ëŠ” ì§€ ê²€ì‚¬
     for (int i = 0; i < room_reserve_cnt_arr[room__num-1]; i++) {
         RESERVE r;
         read_reserve(branch_num, room__num, i,&r);
-        if(reserved_date != r.reserved_date) continue;       // ³¯Â¥ ´Ù¸£¸é ÆĞ½º
+        if(reserved_date != r.reserved_date) continue;       // ë‚ ì§œ ë‹¤ë¥´ë©´ íŒ¨ìŠ¤
         if(start < r.reserved_time){
             if(end <= r.reserved_time) continue;
-            printf(">> ÀÌ¹Ì ¿¹¾àµÈ ½Ã°£ÀÔ´Ï´Ù.\n");
+            printf(">> ì´ë¯¸ ì˜ˆì•½ëœ ì‹œê°„ì…ë‹ˆë‹¤.\n");
             return false;
         }
         else if(start < r.reserved_time + r.using_time){
-            printf(">> ÀÌ¹Ì ¿¹¾àµÈ ½Ã°£ÀÔ´Ï´Ù.\n");
+            printf(">> ì´ë¯¸ ì˜ˆì•½ëœ ì‹œê°„ì…ë‹ˆë‹¤.\n");
             return false;
         }
         else continue;
@@ -891,7 +891,7 @@ bool is_reserve_able(int reserved_date, int reserved_time, int using_time, int b
     return true;
 }
 
-// ÁöÁ¡ ¹øÈ£ÁÖ¸é ÆÄÀÏ¸í ¹İÈ¯
+// ì§€ì  ë²ˆí˜¸ì£¼ë©´ íŒŒì¼ëª… ë°˜í™˜
 char* get_branch_file_name(int branch_num){
     switch(branch_num){
         case 1:
