@@ -1,10 +1,8 @@
-#define DEBUG
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
 #include <unistd.h>
-// #include <io.h>
 #include <time.h>
 
 // 필드 크기 상수
@@ -19,6 +17,8 @@
 #define SIZE_RESERVE 28
 #define SIZE_ROOM_INFO_FILE_NAME 26
 
+#define room_format "./branch_%d_room_%d_info.dat"
+
 // 최대값 상수
 const int BRANCH_NUM = 6;
 const int MAX_ROOM_NUM = 5;
@@ -31,7 +31,6 @@ typedef struct _RESERVE{
     int user_num;
 } RESERVE;
 
-#define room_format "./branch_%d_room_%d_info.dat"
 
 // 파일명
 char BRANCH_INFO_FILE_NAME[] = "./branch_info.dat";
@@ -652,7 +651,6 @@ void get_branch_info(int branch_num){
     open_file(&fp ,get_branch_file_name(branch_num));         // 파일 열기
     if(is_file_empty(fp)){                                    // 파일이 비어있으면
         init_branch_info(branch_num);                         // 초기화 (지점 없음)
-        // open_file(&fp ,get_branch_file_name(branch_num));     // 파일 열기
     }
     
     fseek(fp, 0, SEEK_SET);            // 파일 포인터 시작점 설정
@@ -662,23 +660,16 @@ void get_branch_info(int branch_num){
     fseek(fp, SIZE_ROOM_ABLE + SIZE_ROOM_CAPACITY, SEEK_SET);            // 파일 포인터 시작점 설정
     fread(room_reserve_cnt_char,strlen(room_reserve_cnt_char), sizeof(char),fp);   // 읽기
 
-    // printf("room_able_arr[]: ");
     for (int i = 0; i < 5; i++) {
         if(room_able_char[i] == '0') room_able_arr[i] = false;
         else room_able_arr[i] = true;
-        // printf("%d ", room_able_arr[i]);
     }
-    // printf("\nroom_capacity_arr[]: ");
     for (int i = 0; i < 5; i++) {
         room_capacity_arr[i] = (room_capacity_char[i*2] - '0')*10 + (room_capacity_char[i*2+1] - '0');
-        // printf("%d ", room_capacity_arr[i]);
     }
-    // printf("\nreserve_cnt_arr[]: ");
     for (int i = 0; i < 5; i++) {
         room_reserve_cnt_arr[i] = (room_reserve_cnt_char[i*2] - '0')*10 + (room_reserve_cnt_char[i*2+1] - '0');
-        // printf("%d ", room_reserve_cnt_arr[i]);
     }
-    // printf("\n");
     fclose(fp);
 }
 
@@ -822,7 +813,6 @@ void delete_reserve(int branch_num, int room_num, int rnn){
     // 읽어온거 지울 예약정보에 덮어쓰기
     write_reserve(branch_num,room_num, rnn, &r);
 
-    // reserve_cnt-1
     reserve_cnt--;
     room_reserve_cnt_char[(room_num-1)*2] = reserve_cnt / 10 + '0';; room_reserve_cnt_char[(room_num-1)*2+1] = reserve_cnt % 10 +'0';
     set_room_reserve_cnt_info(room_reserve_cnt_char, branch_num);
@@ -851,7 +841,7 @@ bool is_reserve_able(int reserved_date, int reserved_time, int using_time, int b
     if(today_year > r_year){
         printf(">> 예약이 불가능한 날짜입니다.\n");
         return false;
-    }    // 2022 2021
+    }
     else if(today_year == r_year){
         if(today_mon > r_mon){
         printf(">> 예약이 불가능한 날짜입니다.\n");
