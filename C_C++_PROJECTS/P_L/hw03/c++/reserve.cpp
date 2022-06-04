@@ -369,7 +369,8 @@ void mode_del_room(int branch_num, int room_num){
 // 사용자 모드 초기 화면
 void mode_user(void){
     printf(">> 사용자 ID를 입력하세요(5~10글자) : ");
-    fgets(user_id, 100, stdin);
+    fgets(user_id, sizeof(user_id), stdin);
+    user_id[strlen(user_id)-1] = '\0';
     int user_input_len = strlen(user_id);
     if(user_input_len < 5 || user_input_len >10) {wrong_input(); return;}
 
