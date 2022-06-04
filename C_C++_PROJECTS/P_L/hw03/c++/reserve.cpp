@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <iostream>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
@@ -23,13 +23,26 @@
 const int BRANCH_NUM = 6;
 const int MAX_ROOM_NUM = 5;
 
-typedef struct _RESERVE{
+class BRANCH_ABLE{
+    public :
+        int branch_able[6];
+};
+
+class BRANCH_INFO{
+    public :
+        int room_able[5];
+        int room_cap[5];
+        int room_r_cnt[5];
+};
+
+class RESERVE{
+    public :
     char user_id[10];
     int reserved_date;
     int reserved_time;
     int using_time;
     int user_num;
-} RESERVE;
+};
 
 
 // 파일명
@@ -40,15 +53,15 @@ char BRANCH_3_INFO[] = "./branch_3_info.dat";
 char BRANCH_4_INFO[] = "./branch_4_info.dat";
 char BRANCH_5_INFO[] = "./branch_5_info.dat";
 char BRANCH_6_INFO[] = "./branch_6_info.dat";
-
 char user_id[1000];
+
 char branch_able_char[6] = {'a','a','a','a','a','a'};
 bool branch_able_arr[6];
-char room_able_char[SIZE_ROOM_ABLE] = {'i','i','i','i','i'};                                        // curr번 지점의 room 생성 여부
+char room_able_char[SIZE_ROOM_ABLE] = {'i','i','i','i','i'};          // curr번 지점의 room 생성 여부
 bool room_able_arr[5];
-char  room_capacity_char[SIZE_ROOM_CAPACITY] = {'i','i','i','i','i','i','i','i','i','i'};           // 현재 지점의 room의 최대인원 정보
+char  room_capacity_char[SIZE_ROOM_CAPACITY] = {'i','i','i','i','i','i','i','i','i','i'};      // 현재 지점의 room의 최대인원 정보
 int room_capacity_arr[5];
-char  room_reserve_cnt_char[SIZE_RESERVE_CNT] = {'i','i','i','i','i','i','i','i','i','i'};           // 현재 지점의 room의 예약 개수 정보
+char  room_reserve_cnt_char[SIZE_RESERVE_CNT] = {'i','i','i','i','i','i','i','i','i','i'};        // 현재 지점의 room의 예약 개수 정보
 int room_reserve_cnt_arr[5];
 
 // input func
@@ -157,9 +170,7 @@ void mode_admin(void){
     printf("-----------------------------\n");
     printf("지점을 선택하세요.\n>> ");          // 지점선택 입력 받기
     int input_branch_selection = get_user_input();
-    if(input_branch_selection != 1 && input_branch_selection != 2 && 
-        input_branch_selection != 3 &&input_branch_selection != 4 &&
-        input_branch_selection != 5 && input_branch_selection != 6){
+    if(input_branch_selection != 1 && input_branch_selection != 2 &&input_branch_selection != 3 &&input_branch_selection != 4 &&input_branch_selection != 5 && input_branch_selection != 6){
         wrong_input();
         return;
     }
@@ -241,6 +252,7 @@ void mode_mod_branch(int branch_num){
             wrong_input();
             return;
     }
+
 }
 
 // 지점 삭제 모드
@@ -380,6 +392,8 @@ void mode_user(void){
             wrong_input();
             return;
     }
+
+
 }
 
 // 스터디 공간 조회
@@ -397,9 +411,7 @@ void mode_lookup_rooms(void){
     printf("-----------------------------\n");
     printf(">> 조회할 지점을 선택하세요.\n>>");
     int input_branch_selection = get_user_input();
-    if(input_branch_selection != 1 && input_branch_selection != 2 &&
-        input_branch_selection != 3 &&input_branch_selection != 4 &&
-        input_branch_selection != 5 && input_branch_selection != 6){
+    if(input_branch_selection != 1 && input_branch_selection != 2 &&input_branch_selection != 3 &&input_branch_selection != 4 &&input_branch_selection != 5 && input_branch_selection != 6){
         wrong_input();
         return;
     }
@@ -435,9 +447,7 @@ void mode_add_reserve(void){
     printf("-----------------------------\n");
     printf(">> 예약할 지점을 선택하세요.\n>>");
     int input_branch_selection = get_user_input();
-    if(input_branch_selection != 1 && input_branch_selection != 2 &&
-        input_branch_selection != 3 &&input_branch_selection != 4 &&
-        input_branch_selection != 5 && input_branch_selection != 6){
+    if(input_branch_selection != 1 && input_branch_selection != 2 &&input_branch_selection != 3 &&input_branch_selection != 4 &&input_branch_selection != 5 && input_branch_selection != 6){
         wrong_input();
         return;
     }
@@ -488,10 +498,7 @@ void mode_add_reserve(void){
         wrong_input();
         return;
     }
-    if(!is_reserve_able(input_reserved_date, input_reserved_time, input_using_time, input_branch_selection, input_room_selection)){
-        wrong_input();
-        return;
-    }
+    if(!is_reserve_able(input_reserved_date, input_reserved_time, input_using_time, input_branch_selection, input_room_selection)) {wrong_input(); return;}
     RESERVE r;
     strcpy(r.user_id, user_id);
     r.reserved_date = input_reserved_date;
@@ -526,7 +533,7 @@ void mode_mod_reserve(void){
                 read_reserve(i,j,k,&r);
                 if(strcmp(r.user_id, user_id) == 0){        // id 동일하면 출력
                     cnt++;
-                    printf(">> %d) 지점 %d, 스터디룸 %d, 예약 id: %s, 예약 날짜(YYMMDD): %d,예약 시간: %d시, 사용시간: %d시간, 사용인원: %d명\n",cnt,i,j, r.user_id,r.reserved_date,r.reserved_time, r.using_time, r.user_num);
+                    printf(">> %d) 지점 %d, 스터디룸 %d, 예약 id: %s, 예약 날짜(YYMMDD): %d, 예약 시간: %d시, 사용시간: %d시간, 사용인원: %d명\n",cnt,i,j, r.user_id,r.reserved_date,r.reserved_time, r.using_time, r.user_num);
                     reserve_arr[cnt] = r;
                     branch_arr[cnt] = i;
                     room_arr[cnt] = j; 
@@ -657,6 +664,7 @@ void get_branch_info(int branch_num){
     open_file(&fp ,get_branch_file_name(branch_num));         // 파일 열기
     if(is_file_empty(fp)){                                    // 파일이 비어있으면
         init_branch_info(branch_num);                         // 초기화 (지점 없음)
+        // open_file(&fp ,get_branch_file_name(branch_num));     // 파일 열기
     }
     
     fseek(fp, 0, SEEK_SET);            // 파일 포인터 시작점 설정
@@ -666,16 +674,23 @@ void get_branch_info(int branch_num){
     fseek(fp, SIZE_ROOM_ABLE + SIZE_ROOM_CAPACITY, SEEK_SET);            // 파일 포인터 시작점 설정
     fread(room_reserve_cnt_char,strlen(room_reserve_cnt_char), sizeof(char),fp);   // 읽기
 
+    // printf("room_able_arr[]: ");
     for (int i = 0; i < 5; i++) {
         if(room_able_char[i] == '0') room_able_arr[i] = false;
         else room_able_arr[i] = true;
+        // printf("%d ", room_able_arr[i]);
     }
+    // printf("\nroom_capacity_arr[]: ");
     for (int i = 0; i < 5; i++) {
         room_capacity_arr[i] = (room_capacity_char[i*2] - '0')*10 + (room_capacity_char[i*2+1] - '0');
+        // printf("%d ", room_capacity_arr[i]);
     }
+    // printf("\nreserve_cnt_arr[]: ");
     for (int i = 0; i < 5; i++) {
         room_reserve_cnt_arr[i] = (room_reserve_cnt_char[i*2] - '0')*10 + (room_reserve_cnt_char[i*2+1] - '0');
+        // printf("%d ", room_reserve_cnt_arr[i]);
     }
+    // printf("\n");
     fclose(fp);
 }
 
@@ -736,7 +751,6 @@ void set_branch_able_info(char new_branch_info[]){
     }
     fclose(fp);               // 파일 닫아서 저장
 }  
-
 // branch_n_info.dat 갱신
 void set_room_able_info(char new_room_info[], int branch_num){
     FILE* fp;
@@ -820,6 +834,7 @@ void delete_reserve(int branch_num, int room_num, int rnn){
     // 읽어온거 지울 예약정보에 덮어쓰기
     write_reserve(branch_num,room_num, rnn, &r);
 
+    // reserve_cnt-1
     reserve_cnt--;
     room_reserve_cnt_char[(room_num-1)*2] = reserve_cnt / 10 + '0';; room_reserve_cnt_char[(room_num-1)*2+1] = reserve_cnt % 10 +'0';
     set_room_reserve_cnt_info(room_reserve_cnt_char, branch_num);
@@ -848,7 +863,7 @@ bool is_reserve_able(int reserved_date, int reserved_time, int using_time, int b
     if(today_year > r_year){
         printf(">> 예약이 불가능한 날짜입니다.\n");
         return false;
-    }
+    }    // 2022 2021
     else if(today_year == r_year){
         if(today_mon > r_mon){
         printf(">> 예약이 불가능한 날짜입니다.\n");
