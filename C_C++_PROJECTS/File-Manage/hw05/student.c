@@ -46,6 +46,10 @@ int deleteRecord(FILE *fp, enum FIELD f, char *keyval){
 	int cnt=0;
 	for(int i=0; i<h.records_num; i++){
 		STUDENT* read_s = (STUDENT*)malloc(sizeof(char)*RECORD_SIZE);
+		fseek(fp, HEADER_SIZE + i*RECORD_SIZE, SEEK_SET);
+		DEL d;
+		fread(&d,sizeof(DEL), 1, fp);
+		if(d.star == '*') continue;
 		if(readRecord(fp,read_s,i) == 0){
 			printf("error in readRecord()\n");
 			return 0;
@@ -59,6 +63,7 @@ int deleteRecord(FILE *fp, enum FIELD f, char *keyval){
 			fseek(fp, HEADER_SIZE+RECORD_SIZE*i, SEEK_SET);
 			fwrite(&del_s, sizeof(DEL), 1, fp);
 			int last = getLastListNum(fp);
+
 			if(last == -1){		// 첫 삭제인 경우
 				HEADER mod_h;
 				mod_h.records_num = h.records_num;
@@ -68,6 +73,7 @@ int deleteRecord(FILE *fp, enum FIELD f, char *keyval){
 			}
 			else{
 				fseek(fp, HEADER_SIZE+RECORD_SIZE*last, SEEK_SET);
+				del_s.star = '*';
 				del_s.next_rrn = i;
 				fwrite(&del_s, sizeof(DEL), 1, fp);
 			}
@@ -88,7 +94,7 @@ int getLastListNum(FILE *fp){
 	while(curr_del_rrn != -1){
 		DEL d;
 		fseek(fp, HEADER_SIZE + curr_del_rrn*RECORD_SIZE, SEEK_SET);
-		fread(&d,sizeof(DEL), 1, fp);
+		fread(&d,sizeof(DEL), 1, fp); cnt++;
 		if(d.next_rrn == -1) return curr_del_rrn;
 		curr_del_rrn = d.next_rrn;
 
@@ -273,6 +279,49 @@ int appendRecord(FILE *fp, char *id, char *name, char *dept, char *addr, char *e
 	else return 1;
 }
 
+void __debug__print_all(FILE *fp){
+	fp = fopen(filename, "r+");						//파일 열기
+	if(fp == NULL){
+		printf("file open error\n");
+		exit(1);
+	}
+	int file_size=-1;								// 파일 사이즈 검사
+	fseek(fp,0,SEEK_END);
+	file_size = ftell(fp);
+	// printf("file_size : %d\n", file_size);
+	if(file_size <= 0){								// 빈파일이면
+		HEADER h;
+		h.records_num =0;
+		h.next_rrn = -1;
+		fseek(fp, 0, SEEK_SET);
+		fwrite(&h, sizeof(HEADER), 1, fp);
+	}
+	fseek(fp,0,SEEK_SET);							// 헤더에서 저장된 레코드 개수 가져오기
+	HEADER h;
+	fread(&h, sizeof(HEADER), 1, fp);
+	printf("record_num : %d\n", h.records_num);
+	printf("next_rrn : %d\n", h.next_rrn);
+	
+
+	for (int i = 0; i < h.records_num; i++) {
+		STUDENT* read_s = (STUDENT*)malloc(sizeof(char)*RECORD_SIZE);
+		fseek(fp, HEADER_SIZE + i*RECORD_SIZE, SEEK_SET);
+		DEL d;
+		fread(&d,sizeof(DEL), 1, fp);
+		if(d.star == '*') {
+			printf("(%d) --deleted record-- %c : %d\n", i, d.star, d.next_rrn);
+			continue;
+		}
+		if(readRecord(fp,read_s,i) == 0){
+			printf("error in readRecord()\n");
+			exit(1);
+		}
+		printf("(%d) ",i);
+		printRecord(read_s);		
+		free(read_s);
+	}	
+}
+
 //
 // 학생 레코드 파일에서 검색 키값을 만족하는 레코드가 존재하는지를 sequential search 기법을 
 // 통해 찾아내고, 이를 만족하는 모든 레코드의 내용을 출력한다. 검색 키는 학생 레코드를 구성하는
@@ -449,6 +498,10 @@ void main(int argc, char *argv[])
 			printf("error in insertRecord()\n");
 			exit(1);
 		}
+	}
+	else if(strcmp(argv[1],"-z")==0){
+		printf("debug--print--all\n");
+		__debug__print_all(fp);
 	}
 }
 
