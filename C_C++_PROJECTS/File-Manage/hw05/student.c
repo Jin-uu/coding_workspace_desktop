@@ -499,9 +499,12 @@ void main(int argc, char *argv[])
 			exit(1);
 		}
 	}
-	else if(strcmp(argv[1],"-z")==0){
+	else if(strcmp(argv[1],"-z")==0){		// µð¹ö±ë¿ë
 		printf("debug--print--all\n");
 		__debug__print_all(fp);
+	}
+	else {
+		printf("option input error!!\n");
 	}
 }
 
