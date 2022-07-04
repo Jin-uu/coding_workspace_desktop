@@ -21,7 +21,6 @@ int dfs(int r, int c){
     for (int i = 0; i < 4; i++) {
         int next_r = r + move_r[i];
         int next_c = c + move_c[i];
-        if(r < 0 || c < 0 || r >= M || c >= N) continue;
         if(map_arr[next_r][next_c] < map_arr[r][c]) sum += dfs(next_r, next_c);
     }
     return ret = sum;
