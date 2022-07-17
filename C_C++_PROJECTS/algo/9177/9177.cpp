@@ -15,10 +15,10 @@ bool solve(int left, int right){
     int &ret = dp_tbl[left][right];
     if(ret != -1) return ret;
 
-    int curr = left+right-1;
-    if(tgt[curr+1] == s1[left]) if(solve(left+1, right)) return ret = true;
+    int curr = left+right;
+    if(tgt[curr] == s1[left]) if(solve(left+1, right)) return ret = true;
         
-    if(tgt[curr+1] == s2[right]) if(solve(left, right+1)) return ret = true;
+    if(tgt[curr] == s2[right]) if(solve(left, right+1)) return ret = true;
         
     return ret = false;
 }
