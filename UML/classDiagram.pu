@@ -38,7 +38,8 @@ ComputerDevice <|-- Speaker
 ComputerDevice <|-- Keyboard
 ComputerDevice <|-- Body
 ComputerDevice <|-- Monitor
-ComputerDevice "0..*" <--* Computer : -components
+ComputerDevice <|-- Computer
+ComputerDevice "-components\l0..*" <--* Computer 
 
 
 @enduml
