@@ -1,4 +1,5 @@
 *.log
 *.json
 *.exe
+*.prob
 settings.json
