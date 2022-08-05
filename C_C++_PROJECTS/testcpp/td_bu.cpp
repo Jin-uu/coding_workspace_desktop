@@ -91,7 +91,7 @@ void print_result(){
     cout << "td_result" << endl;
     for (int i = 0; i < 6; i++) {
         for (int j = 0; j < 6; j++) {
-            cout << td_result[i][j] / 3 << " ";
+            cout << (int)(td_result[i][j] / 3) << " ";
         }
         cout << endl;
     }
@@ -99,7 +99,7 @@ void print_result(){
     cout << "bu_result" << endl;
     for (int i = 0; i < 6; i++) {
         for (int j = 0; j < 6; j++) {
-            cout << bu_result[i][j] / 3 << " ";
+            cout << (int)bu_result[i][j] / 3 << " ";
         }
         cout << endl;
     }
