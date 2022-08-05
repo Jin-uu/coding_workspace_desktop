@@ -6,14 +6,15 @@
 #define MAX 110'00
 typedef unsigned long long ll;
 
-int dr=10,dc=10;
+int dr=2,dc=3;
 
 using namespace std;
 
 ll solve_1_arr[MAX+1][MAX+1];
 ll solve_2_arr[MAX+1][MAX+1];
 
-double result[10][10];
+double td_result[10][10];
+double bu_result[10][10];
 int flag[] = {1,2,3,5,10,100};
 
 ll top_down(int r, int c){
@@ -45,11 +46,7 @@ void bottom_up(int r, int c) {
     }
 }
 
-void get_result(int dr, int dc){
-
-}
-
-int main(){
+void get_result(int a, int b){
 ///////////////////////////////////////////////////////////////
     cout << "=========================================" << endl;
     cout << "dr : " << dr << ", dc : " << dc << endl;
@@ -66,6 +63,7 @@ int main(){
     result = (double) (end - start);
     cout << "time : " << result << "(ms)" << endl;
 
+    td_result[a][b] += result;
 
     cout << "-----------------------------------------" << endl;
 ///////////////////////////////////////////////////////////////
@@ -80,7 +78,46 @@ int main(){
     end_2 = clock();
     result_2 = (double) (end_2 - start_2);
     cout << "time : " << result_2 << "(ms)" << endl;
+    
+    bu_result[a][b] += result_2;
 ///////////////////////////////////////////////////////////////
 
     cout << "=========================================" << endl;
+
+}
+
+void print_result(){
+    cout << "=========================================" << endl;
+    cout << "td_result" << endl;
+    for (int i = 0; i < 6; i++) {
+        for (int j = 0; j < 6; j++) {
+            cout << td_result[i][j] / 3 << " ";
+        }
+        cout << endl;
+    }
+    cout << "=========================================" << endl;
+    cout << "bu_result" << endl;
+    for (int i = 0; i < 6; i++) {
+        for (int j = 0; j < 6; j++) {
+            cout << bu_result[i][j] / 3 << " ";
+        }
+        cout << endl;
+    }
+    
+}
+
+int main(){
+    for (int i = 0; i < 6; i++) {
+        for (int j = 0; j < 6; j++) {
+            if(i==0 && j==0) continue;
+            dr = flag[i]; dc = flag[j];
+            for (int k = 0; k < 3; k++) {
+                get_result(i,j);
+            }
+        }
+    }
+
+    print_result();
+    
+
 }
