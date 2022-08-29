@@ -25,7 +25,7 @@ state get_next_state(state s, int dir){
 
     bool flag = true;
     while(flag){
-        if(board[next_red.r][next_red.c] == '.') {
+        if(board[next_red.r][next_red.c] == '.') {  //
             next_red.r += move_r[dir]; next_red.c += move_c[dir];
             continue;
         }
