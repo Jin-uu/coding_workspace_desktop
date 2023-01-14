@@ -5,7 +5,10 @@
 using namespace std;
 
 int n, tmp;
-vector<int> v, lv, rv, st;
+long long ans = -1;
+vector<int> v,lst, rst;
+int lv[MAX+1];
+int rv[MAX+1];
 
 int main() {
     ios::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
@@ -15,10 +18,20 @@ int main() {
     }
 
     for(int i=0; i<n; i++) {
-        while(!st.empty() && st.back() >= v[i]) st.pop_back();
-        if(st.empty()) lv[i] = -1;
-        else lv[i] = st.back();
-        st.push_back(v[i]);
+        while(!lst.empty() && v[lst.back()] >= v[i]) lst.pop_back();
+        if(lst.empty()) lv[i] = -1;
+        else lv[i] = lst.back();
+        lst.push_back(i);
     }
 
+    for(int i=n-1; i>=0; i--) {
+        while(!rst.empty() && v[rst.back()] >= v[i]) rst.pop_back();
+        if(rst.empty()) rv[i] = n;
+        else rv[i] = rst.back();
+        rst.push_back(i);
+    }
+
+    for(int i=0; i<n; i++) ans = max(ans, (long long)(rv[i]-lv[i] - 1)*(long long)v[i]);
+
+    cout << ans;
 }
