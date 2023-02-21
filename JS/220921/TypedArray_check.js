@@ -1,6 +1,6 @@
 const MAX = 10000000;
-const buffer = new ArrayBuffer(MAX*4);
-const typedarr = new Int32Array(buffer);
+const buffer = new ArrayBuffer(MAX*1);
+const typedarr = new Int8Array(buffer);
 
 console.time("TypedArray insertion time");
 for (let i=0; i<typedarr.length; i++) {
