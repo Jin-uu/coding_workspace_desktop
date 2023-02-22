@@ -13,7 +13,7 @@ int main(void) {
 		temp = rand()%101;
 		cout << temp << " ";
 		while(1) {
-			temp = rand()%101;
+			temp = rand()%35;
 			if(temp != 0) break;
 		}
 		cout << temp << " ";
