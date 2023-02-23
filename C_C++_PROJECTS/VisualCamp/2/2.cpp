@@ -1,6 +1,5 @@
 #include <iostream>
 #include <algorithm>
-#include <cstring>
 #include <vector>
 #define MAX_N 100
 #define MAX 100
