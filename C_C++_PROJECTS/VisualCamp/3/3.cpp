@@ -11,7 +11,7 @@ vector<int> v;
 vector<long long> partial_sums;
 vector<thread> workers;
 
-void worker(vector<int>::iterator start, vector<int>::iterator end, long long* result) {
+void get_partial_sum(vector<int>::iterator start, vector<int>::iterator end, long long* result) {
   long long sum = 0;
   for (auto itr = start; itr < end; ++itr) sum += *itr;
 
@@ -27,14 +27,12 @@ int main() {
 
   partial_sums.resize(THREAD_NUM);
   for(int i=0; i<THREAD_NUM; i++) {
-    workers.push_back(thread(worker, v.begin() + i * UNIT, v.begin() + (i + 1) * UNIT, &partial_sums[i]));
+    workers.push_back(thread(get_partial_sum, v.begin() + i * UNIT, v.begin() + (i + 1) * UNIT, &partial_sums[i]));
   }
-
   for(int i=0; i<THREAD_NUM; i++) workers[i].join();
 
   long long total =0;
   for(int i=0; i<THREAD_NUM; i++) total += partial_sums[i];
-
 
   cout << total;
 }
